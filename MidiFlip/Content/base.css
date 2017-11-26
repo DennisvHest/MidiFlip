@@ -26,6 +26,8 @@ button:active {
   background-color: #e6e6e6;
 }
 #midi-dropzone {
+  position: absolute;
+  width: 100%;
   height: 100vh;
 }
 #flip {

@@ -1,4 +1,4 @@
-﻿@using (Html.BeginForm("Flip", "Home", FormMethod.Post, new { id = "midi-dropzone" })) {
+﻿<div id="midi-dropzone">
     <div id="flip" class="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-4 col-lg-2 col-lg-offset-5">
         <h1>#MIDIFLIP</h1>
         <p>Web tool for automatically flipping MIDI-files.</p>
@@ -9,7 +9,8 @@
         <button id="browse" type="button"><i class="fa fa-upload" aria-hidden="true"></i> Or browse...</button>
         <button id="flip-button" type="submit">FLIP</button>
     </div>
-}
+</div>
+
 
 <div id="drag-feedback"></div>
 
@@ -17,16 +18,28 @@
     <script src="~/Scripts/dropzone.js"></script>
     <script>
         $("#midi-dropzone").dropzone({
+            url: "/home/flip",
             clickable: "#browse",
-            previewTemplate: "",
-            dictDefaultMessage: "",
+            autoProcessQueue: false,
+//            previewTemplate: "",
+//            dictDefaultMessage: "",
             init: function() {
                 this.on("dragenter", displayDragFeedback);
+            },
+            success: function(file, response) {
+                console.log(file);
+                console.log(response);
             }
         });
+
+        var midiDropzone = Dropzone.forElement("#midi-dropzone");
 
         function displayDragFeedback() {
             $("#drag-feedback").fadeIn("fast");
         }
+
+        $("#flip-button").click(function() {
+            midiDropzone.processQueue();
+        });
     </script>
 }
