@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
+using MidiFlip.Exceptions;
 using MidiSharp;
-using MidiSharp.Events;
 using MidiSharp.Events.Voice.Note;
 
 namespace MidiFlip.Services {
@@ -20,12 +19,53 @@ namespace MidiFlip.Services {
             MidiSequence midi = MidiSequence.Open(midiFile.InputStream);
 
             foreach (MidiTrack track in midi.Tracks) {
-                //The anchor note to flip everything else around
                 IEnumerable<OnNoteVoiceMidiEvent> onNoteEvents = track.OfType<OnNoteVoiceMidiEvent>();
+
+                if (!onNoteEvents.Any()) continue; //Nothing to flip
+
+                //The anchor note to flip everything else around
                 int anchorNote = onNoteEvents.First().Note;
+                int octaveChange = 0;
+
+                //Check if flipping won't make the notes go out of range (0-127) TODO: Test all cases
+                int highestNote = onNoteEvents.Max(e => e.Note);
+                int lowestNote = onNoteEvents.Min(e => e.Note);
+
+                if (lowestNote == Constants.MinMidiNote && highestNote == Constants.MaxMidiNote)
+                    throw new MidiFlipException("Flipping is impossible when the lowest note is the minimum MIDI-note and the highest note is the maximum MIDI-note!");
+
+                if (anchorNote - lowestNote > highestNote - lowestNote) {
+                    //Flipping might make notes go past 127, if so, try to decrease octave
+                    int outOfRange = anchorNote + (anchorNote - lowestNote);
+
+                    if (outOfRange > Constants.MaxMidiNote) {
+                        while (outOfRange + octaveChange > Constants.MaxMidiNote)
+                            octaveChange -= Constants.Octave;
+
+                        if (lowestNote + octaveChange < Constants.MinMidiNote) {
+                            //Out of range on the other side now, flip everything around the middle note instead and don't change octave
+                            anchorNote = (highestNote - lowestNote) / 2;
+                            octaveChange = 0;
+                        }
+                    }
+                } else {
+                    //Flipping might make notes go below 0, if so, try to increase octave
+                    int outOfRange = anchorNote - (highestNote - anchorNote);
+
+                    if (outOfRange < Constants.MinMidiNote) {
+                        while (outOfRange + octaveChange < Constants.MinMidiNote)
+                            octaveChange += Constants.Octave;
+
+                        if (highestNote + octaveChange > Constants.MaxMidiNote) {
+                            //Out of range on the other side now, flip everything around the middle note instead and don't change octave
+                            anchorNote = (int)Math.Ceiling(((double)highestNote - lowestNote) / 2);
+                            octaveChange = 0;
+                        }
+                    }
+                }
 
                 foreach (OnNoteVoiceMidiEvent onNoteEvent in onNoteEvents) {
-                    onNoteEvent.Note = (byte) (anchorNote + anchorNote - onNoteEvent.Note);
+                    onNoteEvent.Note = (byte) (anchorNote + anchorNote - onNoteEvent.Note + octaveChange);
                 }
             }
 
