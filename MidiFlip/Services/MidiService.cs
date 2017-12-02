@@ -19,17 +19,17 @@ namespace MidiFlip.Services {
             MidiSequence midi = MidiSequence.Open(midiFile.InputStream);
 
             foreach (MidiTrack track in midi.Tracks) {
-                IEnumerable<OnNoteVoiceMidiEvent> onNoteEvents = track.OfType<OnNoteVoiceMidiEvent>();
+                IEnumerable<NoteVoiceMidiEvent> noteEvents = track.OfType<NoteVoiceMidiEvent>();
 
-                if (!onNoteEvents.Any()) continue; //Nothing to flip
+                if (!noteEvents.Any()) continue; //Nothing to flip
 
                 //The anchor note to flip everything else around
-                int anchorNote = onNoteEvents.First().Note;
+                int anchorNote = noteEvents.First().Note;
                 int octaveChange = 0;
 
                 //Check if flipping won't make the notes go out of range (0-127) TODO: Test all cases
-                int highestNote = onNoteEvents.Max(e => e.Note);
-                int lowestNote = onNoteEvents.Min(e => e.Note);
+                int highestNote = noteEvents.Max(e => e.Note);
+                int lowestNote = noteEvents.Min(e => e.Note);
 
                 if (lowestNote == Constants.MinMidiNote && highestNote == Constants.MaxMidiNote)
                     throw new MidiFlipException("Flipping is impossible when the lowest note is the minimum MIDI-note and the highest note is the maximum MIDI-note!");
@@ -64,7 +64,7 @@ namespace MidiFlip.Services {
                     }
                 }
 
-                foreach (OnNoteVoiceMidiEvent onNoteEvent in onNoteEvents) {
+                foreach (NoteVoiceMidiEvent onNoteEvent in noteEvents) {
                     onNoteEvent.Note = (byte) (anchorNote + anchorNote - onNoteEvent.Note + octaveChange);
                 }
             }

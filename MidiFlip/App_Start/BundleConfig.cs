@@ -1,12 +1,17 @@
 ﻿using System.Web;
 using System.Web.Optimization;
+using MidiFlip.App_Start;
 
 namespace MidiFlip {
     public class BundleConfig {
         public static void RegisterBundles(BundleCollection bundles) {
-            bundles.Add(new ScriptBundle("~/bundles/basejs").Include(
+            Bundle jsBundle = new ScriptBundle("~/bundles/basejs").Include(
                 "~/Scripts/jquery.min.js",
-                "~/Scripts/bootstrap.min.js"));
+                "~/Scripts/jquery.unobtrusive-ajax.min.js",
+                "~/Scripts/bootstrap.min.js");
+
+            jsBundle.Orderer = new NonOrderingBundleOrderer();
+            bundles.Add(jsBundle);
 
             bundles.Add(new StyleBundle("~/Content/basecss").Include(
                       "~/Content/bootstrap.min.css",
