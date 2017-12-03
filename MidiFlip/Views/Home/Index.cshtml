@@ -16,19 +16,20 @@
 
 @section Scripts {
     <script src="~/Scripts/dropzone.js"></script>
+    <script src="~/Scripts/midiconvert.js"></script>
+    <script src="~/Scripts/tone.min.js"></script>
     <script>
+        var inputFile;
+
         $("#midi-dropzone").dropzone({
             url: "/home/flip",
             clickable: "#browse",
             autoProcessQueue: false,
-//            previewTemplate: "",
-//            dictDefaultMessage: "",
+            //            previewTemplate: "",
+            //            dictDefaultMessage: "",
             init: function() {
                 this.on("dragenter", displayDragFeedback);
-            },
-            success: function(file, response) {
-                console.log(file);
-                console.log(response);
+                this.on("addedfile", onFileAdded)
             }
         });
 
@@ -39,7 +40,45 @@
         }
 
         $("#flip-button").click(function() {
-            midiDropzone.processQueue();
+            var flipRequest = new XMLHttpRequest();
+            flipRequest.open("POST", "/home/flip", true);
+            flipRequest.responseType = "arraybuffer";
+
+            var formData = new FormData();
+            formData.append(inputFile.name, inputFile);
+
+            flipRequest.onload = function() {
+                loadMidi(flipRequest.response);
+            };
+
+            flipRequest.send(formData);
         });
+
+        function onFileAdded(file) {
+            inputFile = file;
+        }
+
+        function loadMidi(buffer) {
+            var blob = new Blob([buffer]);
+
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var flippedMidi = MidiConvert.parse(e.target.result);
+
+                var synth = new Tone.PolySynth(8).toMaster();
+
+                Tone.Transport.bpm.value = flippedMidi.header.bpm;
+
+                var midiPart = new Tone.Part(function (time, note) {
+                        synth.triggerAttackRelease(note.name, note.duration, time, note.velocity);
+                    },
+                    flippedMidi.tracks[0].notes).start();
+
+                Tone.Transport.start();
+            }
+
+            reader.readAsBinaryString(blob);
+        }
     </script>
 }
