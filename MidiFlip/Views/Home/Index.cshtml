@@ -70,10 +70,12 @@
 
                 Tone.Transport.bpm.value = flippedMidi.header.bpm;
 
-                var midiPart = new Tone.Part(function (time, note) {
-                        synth.triggerAttackRelease(note.name, note.duration, time, note.velocity);
-                    },
-                    flippedMidi.tracks[0].notes).start();
+                for (var track = 0; track < flippedMidi.tracks.length; track++) {
+                    var midiPart = new Tone.Part(function (time, note) {
+                            synth.triggerAttackRelease(note.name, note.duration, time, note.velocity);
+                        },
+                        flippedMidi.tracks[track].notes).start();
+                }
 
                 Tone.Transport.start();
             }
