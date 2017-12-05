@@ -36,6 +36,14 @@ button:active {
   transform: translateY(-50%);
   text-align: center;
   padding: 0px;
+  pointer-events: none;
+}
+#flip button,
+#flip p,
+#flip h1,
+#flip h6,
+#flip a {
+  pointer-events: all;
 }
 #flip #upload {
   border: 2px dashed;
@@ -62,16 +70,6 @@ button:active {
 #browse:hover {
   background-color: white;
   color: #236dbe;
-}
-#drag-feedback {
-  display: none;
-  background-color: rgba(0, 0, 0, 0.7);
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  pointer-events: none;
 }
 /* Device specific */
 @media screen and (max-width: 768px) {
