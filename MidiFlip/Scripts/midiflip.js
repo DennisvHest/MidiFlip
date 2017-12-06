@@ -54,8 +54,8 @@ $("#midi-dropzone").dropzone({
 
 var midiDropzone = Dropzone.forElement("#midi-dropzone");
 
-function displayDragFeedback() {
-    if ($(".ripple").is(":hidden")) {
+function displayDragFeedback(event) {
+    if ($(".ripple").is(":hidden") && !(event.fromElement != null && /h1|h6|p/g.test(event.fromElement.localName))) {
         $(".ripple").fadeIn("fast");
     }
 }
@@ -75,6 +75,8 @@ function removeDragFeedback() {
 }
 
 $("#flip-button").click(function () {
+    $(this).html('<i class="fa fa-cog fa-spin fa-3x fa-fw"></i>');
+
     //Send the flip request
     var flipRequest = new XMLHttpRequest();
     flipRequest.open("POST", "/home/flip", true);
@@ -107,6 +109,9 @@ function loadMidi(buffer) {
                 piano.triggerAttackRelease(note.name, note.duration, time, note.velocity);
             }, flippedMidi.tracks[track].notes).start();
         }
+
+        $("#flip-button").html('<i class="fa fa-play fa-3x" aria-hidden="true"></i>');
+        $("#upload").slideUp("fast");
 
         //Start playing
         Tone.Transport.start();

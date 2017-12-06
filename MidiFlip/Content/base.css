@@ -48,6 +48,7 @@ button:active {
 #flip #upload {
   border: 2px dashed;
   padding: 60px 10px;
+  overflow: hidden;
 }
 #flip #upload .fa-file {
   font-size: 92px;
@@ -57,6 +58,9 @@ button:active {
   width: 80px;
   height: 80px;
   margin-top: 10px;
+}
+#flip #flip-button .fa-play {
+  margin-left: 5px;
 }
 #browse {
   border: 2px solid white;
