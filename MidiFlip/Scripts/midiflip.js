@@ -1,6 +1,16 @@
 ﻿var inputFile;
 var reader = new FileReader();
 
+var STATE = {
+    IDLE: "IDLE",
+    LOADED: "LOADED",
+    PLAYING: "PLAYING",
+    PAUSED: "PAUSED",
+    STOPPED: "STOPPED"
+}
+
+var currentState = STATE.IDLE;
+
 var piano = new Tone.Sampler({
     'A0': "A0.[mp3|ogg]",
     'C1': "C1.[mp3|ogg]",
@@ -41,8 +51,8 @@ $("#midi-dropzone").dropzone({
     url: "/home/flip",
     clickable: "#browse",
     autoProcessQueue: false,
-    //            previewTemplate: "",
-    //            dictDefaultMessage: "",
+//                previewTemplate: "",
+//                dictDefaultMessage: "",
     init: function () {
         this.on("dragenter", displayDragFeedback);
         this.on("dragover", moveDragFeedback);
@@ -75,8 +85,31 @@ function removeDragFeedback() {
 }
 
 $("#flip-button").click(function () {
-    $(this).html('<i class="fa fa-cog fa-spin fa-3x fa-fw"></i>');
+    switch (currentState) {
+        case STATE.IDLE:
+            $(this).html('<i class="fa fa-cog fa-spin fa-3x fa-fw"></i>');
+            sendFlipRequest();
+            break;
+        case STATE.LOADED:
+        case STATE.PAUSED:
+            Tone.Transport.start();
+            currentState = STATE.PLAYING;
+            $(this).html('<i class="fa fa-pause fa-3x" aria-hidden="true"></i>');
+            break;
+        case STATE.PLAYING:
+            Tone.Transport.pause();
+            currentState = STATE.PAUSED;
+            $(this).html('<i class="fa fa-play fa-3x" aria-hidden="true"></i>');
+            break;
+    }
+});
 
+function onFileAdded(file) {
+    inputFile = file;
+    $("#browse").html(file.name);
+}
+
+function sendFlipRequest() {
     //Send the flip request
     var flipRequest = new XMLHttpRequest();
     flipRequest.open("POST", "/home/flip", true);
@@ -90,10 +123,6 @@ $("#flip-button").click(function () {
     };
 
     flipRequest.send(formData);
-});
-
-function onFileAdded(file) {
-    inputFile = file;
 }
 
 function loadMidi(buffer) {
@@ -107,15 +136,21 @@ function loadMidi(buffer) {
         for (var track = 0; track < flippedMidi.tracks.length; track++) {
             var midiPart = new Tone.Part(function (time, note) {
                 piano.triggerAttackRelease(note.name, note.duration, time, note.velocity);
-            }, flippedMidi.tracks[track].notes).start();
+            }, flippedMidi.tracks[track].notes);
+
+            midiPart.start().stop(midiPart._loopEnd + "i");
         }
 
-        $("#flip-button").html('<i class="fa fa-play fa-3x" aria-hidden="true"></i>');
-        $("#upload").slideUp("fast");
+        currentState = STATE.LOADED;
 
-        //Start playing
-        Tone.Transport.start();
+        $("#flip-button").html('<i class="fa fa-play fa-3x" aria-hidden="true"></i>');
+        $("#upload").slideUp("fast");        
     }
 
     reader.readAsBinaryString(blob);
 }
+
+Tone.Transport.on("stop", function () {
+    currentState = STATE.STOPPED;
+    $(this).html('<i class="fa fa-stop fa-3x" aria-hidden="true"></i>');
+})
