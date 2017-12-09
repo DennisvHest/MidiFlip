@@ -10,6 +10,8 @@ var STATE = {
 }
 
 var currentState = STATE.IDLE;
+var pausedOffset = 0;
+var sequenceEnd = 0;
 
 var piano = new Tone.Sampler({
     'A0': "A0.[mp3|ogg]",
@@ -51,8 +53,8 @@ $("#midi-dropzone").dropzone({
     url: "/home/flip",
     clickable: "#browse",
     autoProcessQueue: false,
-//                previewTemplate: "",
-//                dictDefaultMessage: "",
+    //                previewTemplate: "",
+    //                dictDefaultMessage: "",
     init: function () {
         this.on("dragenter", displayDragFeedback);
         this.on("dragover", moveDragFeedback);
@@ -87,21 +89,35 @@ function removeDragFeedback() {
 $("#flip-button").click(function () {
     switch (currentState) {
         case STATE.IDLE:
+            $("#browse").prop("disabled", true);
             $(this).html('<i class="fa fa-cog fa-spin fa-3x fa-fw"></i>');
             sendFlipRequest();
             break;
         case STATE.LOADED:
         case STATE.PAUSED:
-            Tone.Transport.start();
+        case STATE.STOPPED:
+            Tone.Transport.start(Tone.now(), pausedOffset + "i");
             currentState = STATE.PLAYING;
             $(this).html('<i class="fa fa-pause fa-3x" aria-hidden="true"></i>');
             break;
         case STATE.PLAYING:
-            Tone.Transport.pause();
+            pausedOffset = Tone.Transport.ticks;
+            Tone.Transport.stop();
             currentState = STATE.PAUSED;
             $(this).html('<i class="fa fa-play fa-3x" aria-hidden="true"></i>');
             break;
     }
+});
+
+$("#flip-another").click(function () {
+    pausedOffset = 0;
+    Tone.Transport.stop();
+    currentState = STATE.IDLE;
+    $("#flip-button").html("FLIP");
+    $("#browse").prop("disabled", false);
+    $("#browse").html('<i class="fa fa-upload" aria-hidden="true"></i> Or browse...');
+    $("#upload").slideDown("fast");
+    $(this).hide();
 });
 
 function onFileAdded(file) {
@@ -132,25 +148,48 @@ function loadMidi(buffer) {
         //Parse the flipped midi file
         var flippedMidi = MidiConvert.parse(e.target.result);
 
+        Tone.Transport.bpm.value = flippedMidi.header.bpm;
+
         //Create a Tone part for each rack in the flipped midi
-        for (var track = 0; track < flippedMidi.tracks.length; track++) {
+        for (var trackNr = 0; trackNr < flippedMidi.tracks.length; trackNr++) {
+            var track = flippedMidi.tracks[trackNr]
+
             var midiPart = new Tone.Part(function (time, note) {
                 piano.triggerAttackRelease(note.name, note.duration, time, note.velocity);
-            }, flippedMidi.tracks[track].notes);
+            }, track.notes);
 
-            midiPart.start().stop(midiPart._loopEnd + "i");
+            //Get the total time in seconds of the flipped midi sequence
+            if (track.notes.length !== 0) {
+                var trackEnd = track.notes[track.notes.length - 1].time + track.notes[track.notes.length - 1].duration;
+
+                if (trackEnd > sequenceEnd)
+                    sequenceEnd = trackEnd;
+            }
+
+            midiPart.start(0);
         }
 
         currentState = STATE.LOADED;
 
         $("#flip-button").html('<i class="fa fa-play fa-3x" aria-hidden="true"></i>');
-        $("#upload").slideUp("fast");        
+        $("#flip-another").css("display", "block");
+        $("#upload").slideUp("fast");
     }
 
     reader.readAsBinaryString(blob);
 }
 
-Tone.Transport.on("stop", function () {
-    currentState = STATE.STOPPED;
-    $(this).html('<i class="fa fa-stop fa-3x" aria-hidden="true"></i>');
-})
+Tone.Transport.on("start", updateStopTime);
+
+Tone.Transport.on("stop", function stopPlaying() {
+    if (currentState !== STATE.PAUSED) {
+        pausedOffset = 0;
+        currentState = STATE.STOPPED;
+        $("#flip-button").html('<i class="fa fa-repeat fa-3x" aria-hidden="true"></i>');
+    }
+});
+
+function updateStopTime() {
+    Tone.Transport.stop(Tone.now() + " + " + sequenceEnd + " - " + pausedOffset + "i");
+}
+
