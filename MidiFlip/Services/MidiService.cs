@@ -34,7 +34,7 @@ namespace MidiFlip.Services {
                 if (lowestNote == Constants.MinMidiNote && highestNote == Constants.MaxMidiNote)
                     throw new MidiFlipException("Flipping is impossible when the lowest note is the minimum MIDI-note and the highest note is the maximum MIDI-note!");
 
-                if (anchorNote - lowestNote > highestNote - lowestNote) {
+                if (anchorNote - lowestNote > highestNote - anchorNote) {
                     //Flipping might make notes go past 127, if so, try to decrease octave
                     int outOfRange = anchorNote + (anchorNote - lowestNote);
 

@@ -53,8 +53,10 @@ $("#midi-dropzone").dropzone({
     url: "/home/flip",
     clickable: "#browse",
     autoProcessQueue: false,
-    //                previewTemplate: "",
-    //                dictDefaultMessage: "",
+    previewsContainer: false,
+    maxFiles: 1,
+    maxFilesize: 5,
+    acceptedFiles: "audio/midi,.mid,.midi",
     init: function () {
         this.on("dragenter", displayDragFeedback);
         this.on("dragover", moveDragFeedback);
@@ -110,9 +112,13 @@ $("#flip-button").click(function () {
 });
 
 $("#flip-another").click(function () {
+    //Stop playing and eset everything
     pausedOffset = 0;
-    Tone.Transport.stop();
+    sequenceEnd = 0;
     currentState = STATE.IDLE;
+    Tone.Transport.stop();
+    Tone.Transport.cancel();
+    midiDropzone.enable();
     $("#flip-button").html("FLIP");
     $("#browse").prop("disabled", false);
     $("#browse").html('<i class="fa fa-upload" aria-hidden="true"></i> Or browse...');
@@ -126,6 +132,8 @@ function onFileAdded(file) {
 }
 
 function sendFlipRequest() {
+    midiDropzone.disable();
+
     //Send the flip request
     var flipRequest = new XMLHttpRequest();
     flipRequest.open("POST", "/home/flip", true);
@@ -182,7 +190,7 @@ function loadMidi(buffer) {
 Tone.Transport.on("start", updateStopTime);
 
 Tone.Transport.on("stop", function stopPlaying() {
-    if (currentState !== STATE.PAUSED) {
+    if (currentState !== STATE.PAUSED && currentState !== STATE.IDLE) {
         pausedOffset = 0;
         currentState = STATE.STOPPED;
         $("#flip-button").html('<i class="fa fa-repeat fa-3x" aria-hidden="true"></i>');
@@ -193,3 +201,9 @@ function updateStopTime() {
     Tone.Transport.stop(Tone.now() + " + " + sequenceEnd + " - " + pausedOffset + "i");
 }
 
+$('body').keyup(function(e) {
+    if (e.keyCode == 32) {
+        //"Click" the flip-button when spacebar is pressed
+        $("#flip-button").click();
+    }
+});
