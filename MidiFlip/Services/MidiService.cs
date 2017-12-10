@@ -9,23 +9,26 @@ using MidiSharp.Events.Voice.Note;
 
 namespace MidiFlip.Services {
     public interface IMidiService {
-        Stream Flip(HttpPostedFileBase midiFile);
+        Stream Flip(Stream midiFile);
     }
 
     public class MidiService : IMidiService {
 
-        public Stream Flip(HttpPostedFileBase midiFile) {
+        public Stream Flip(Stream midiFile) {
             //Load midi file
-            MidiSequence midi = MidiSequence.Open(midiFile.InputStream);
+            MidiSequence midi = MidiSequence.Open(midiFile);
+
+            //The anchor note to flip everything else around
+            int anchorNote = midi.Tracks
+                .Where(t => t.Events.OfType<NoteVoiceMidiEvent>().Any())
+                .Select(t => t.Events.OfType<NoteVoiceMidiEvent>().First())
+                .OrderBy(n => n.DeltaTime).FirstOrDefault().Note;
+            int octaveChange = 0;
 
             foreach (MidiTrack track in midi.Tracks) {
                 IEnumerable<NoteVoiceMidiEvent> noteEvents = track.OfType<NoteVoiceMidiEvent>();
 
                 if (!noteEvents.Any()) continue; //Nothing to flip
-
-                //The anchor note to flip everything else around
-                int anchorNote = noteEvents.First().Note;
-                int octaveChange = 0;
 
                 //Check if flipping won't make the notes go out of range (0-127) TODO: Test all cases
                 int highestNote = noteEvents.Max(e => e.Note);
