@@ -209,6 +209,21 @@ function checkOptions(file) {
         console.log(requiredOctaveChange / OCTAVE);
         console.log(possibleLowerOctaveChange / OCTAVE);
         console.log(possibleHigherOctaveChange / OCTAVE);
+
+        //Fill dropdown with octave change options
+        $("#octave-change").empty();
+
+        var text;
+
+        for (var octaveChange = possibleHigherOctaveChange / OCTAVE; octaveChange >= possibleLowerOctaveChange / OCTAVE; octaveChange--) {
+            text = octaveChange > 0 ? "+" + octaveChange : octaveChange;
+
+            if (octaveChange === 0) {
+                $("#octave-change").append('<option value="' + octaveChange + '" selected>' + text + '</option>');
+            } else {
+                $("#octave-change").append('<option value="' + octaveChange + '">' + text + '</option>');
+            }
+        }
     }
 
     reader.readAsBinaryString(file);
@@ -224,6 +239,7 @@ function sendFlipRequest() {
 
     var formData = new FormData();
     formData.append(inputFile.name, inputFile);
+    formData.append("octaveChange", $("#octave-change").val());
 
     flipRequest.onload = function () {
         loadMidi(flipRequest.response);

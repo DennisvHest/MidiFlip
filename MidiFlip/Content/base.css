@@ -49,7 +49,8 @@ button:active {
 #flip p,
 #flip h1,
 #flip a,
-#flip span {
+#flip span,
+#flip select {
   pointer-events: all;
 }
 #flip #upload {
@@ -92,6 +93,10 @@ button:active {
 #browse:not(.disabled):hover {
   background-color: white;
   color: #236dbe;
+}
+#octave-change {
+  width: 100%;
+  margin: 10px 0;
 }
 /* Device specific */
 @media screen and (max-width: 768px) {

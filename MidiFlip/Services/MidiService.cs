@@ -9,12 +9,12 @@ using MidiSharp.Events.Voice.Note;
 
 namespace MidiFlip.Services {
     public interface IMidiService {
-        Stream Flip(Stream midiFile);
+        Stream Flip(Stream midiFile, int octaveChangeOption);
     }
 
     public class MidiService : IMidiService {
 
-        public Stream Flip(Stream midiFile) {
+        public Stream Flip(Stream midiFile, int octaveChangeOption) {
             //Load midi file
             MidiSequence midi = MidiSequence.Open(midiFile);
 
@@ -28,6 +28,8 @@ namespace MidiFlip.Services {
             int lowestNote = midi.Tracks.SelectMany(t => t.Events.OfType<NoteVoiceMidiEvent>()).Min(e => e.Note);
 
             int octaveChange = 0; //Global octave change required for this sequence
+
+            octaveChangeOption *= Constants.Octave;
 
             bool flipFromMiddle = false; //If octave changes aren't possible, sequence needs to be flipped around the middle
 
@@ -72,7 +74,7 @@ namespace MidiFlip.Services {
                 if (!noteEvents.Any()) continue; //Nothing to flip
 
                 foreach (NoteVoiceMidiEvent onNoteEvent in noteEvents) {
-                    onNoteEvent.Note = (byte)(anchorNote + anchorNote - onNoteEvent.Note + octaveChange);
+                    onNoteEvent.Note = (byte)(anchorNote + anchorNote - onNoteEvent.Note + octaveChange + octaveChangeOption);
                 }
             }
 

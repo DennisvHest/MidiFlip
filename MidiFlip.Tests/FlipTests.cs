@@ -22,7 +22,7 @@ namespace MidiFlip.Tests {
             const int lastNote = 12;
 
             //Act
-            Stream flippedMidiStream = target.Flip(midiStream);
+            Stream flippedMidiStream = target.Flip(midiStream, 0);
 
             //Assert
             MidiSequence flippedMidi = MidiSequence.Open(flippedMidiStream);
@@ -43,7 +43,7 @@ namespace MidiFlip.Tests {
             const int lastNote = 115;
 
             //Act
-            Stream flippedMidiStream = target.Flip(midiStream);
+            Stream flippedMidiStream = target.Flip(midiStream, 0);
 
             //Assert
             MidiSequence flippedMidi = MidiSequence.Open(flippedMidiStream);
@@ -66,7 +66,7 @@ namespace MidiFlip.Tests {
             const int lastNote = 0;
 
             //Act
-            Stream flippedMidiStream = target.Flip(midiStream);
+            Stream flippedMidiStream = target.Flip(midiStream, 0);
 
             //Assert
             MidiSequence flippedMidi = MidiSequence.Open(flippedMidiStream);
