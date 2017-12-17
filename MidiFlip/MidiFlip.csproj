@@ -276,6 +276,7 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\linq.min.js" />
     <Content Include="Scripts\midiconvert.js" />
     <Content Include="Scripts\midiflip.js" />
     <Content Include="Scripts\tone.min.js" />

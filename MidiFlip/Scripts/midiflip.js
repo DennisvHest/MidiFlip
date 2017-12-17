@@ -1,6 +1,10 @@
 ﻿var inputFile;
 var reader = new FileReader();
 
+var MAX_MIDI_NOTE = 127;
+var MIN_MIDI_NOTE = 0;
+var OCTAVE = 12;
+
 var STATE = {
     IDLE: "IDLE",
     LOADED: "LOADED",
@@ -129,8 +133,85 @@ $("#flip-another").click(function () {
 });
 
 function onFileAdded(file) {
-    inputFile = file;
-    $("#browse").html(file.name);
+    if (file.type === "audio/mid" || file.type === "audio/midi") {
+        checkOptions(file);
+        inputFile = file;
+        $("#browse").html(file.name);
+    }
+}
+
+function checkOptions(file) {
+    reader.onload = function (e) {
+        //Parse the midi file
+        var midi = MidiConvert.parse(e.target.result);
+        console.log(midi);
+
+        var anchorNote = Enumerable.from(midi.tracks)
+            .selectMany(function (t) { return t.notes })
+            .minBy(function (n) { return n.time }).midi;
+
+        var highestNote = Enumerable.from(midi.tracks)
+            .selectMany(function (t) { return t.notes })
+            .max(function (n) { return n.midi });
+
+        var lowestNote = Enumerable.from(midi.tracks)
+            .selectMany(function (t) { return t.notes })
+            .min(function (n) { return n.midi });
+
+        console.log(anchorNote);
+        console.log(highestNote);
+        console.log(lowestNote);
+
+        var requiredOctaveChange = 0;
+        var possibleHigherOctaveChange = 0;
+        var possibleLowerOctaveChange = 0;
+
+        var outOfRange;
+
+        var flippingFromMiddle = false;
+
+        //Check the required octave change as to not go outside of the midi note range
+        if (anchorNote - lowestNote > highestNote - anchorNote) {
+            outOfRange = anchorNote + (anchorNote - lowestNote);
+
+            if (outOfRange > MAX_MIDI_NOTE) {
+                while (outOfRange + requiredOctaveChange > MAX_MIDI_NOTE)
+                    requiredOctaveChange -= OCTAVE;
+
+                if (lowestNote + requiredOctaveChange < MIN_MIDI_NOTE) {
+                    requiredOctaveChange = 0;
+                    flippingFromMiddle = true;
+                }
+            }
+        } else {
+            outOfRange = anchorNote - (highestNote - anchorNote);
+
+            if (outOfRange < MIN_MIDI_NOTE) {
+                while (outOfRange + requiredOctaveChange < MIN_MIDI_NOTE)
+                    requiredOctaveChange += OCTAVE;
+
+                if (highestNote + requiredOctaveChange > MAX_MIDI_NOTE) {
+                    requiredOctaveChange = 0;
+                    flippingFromMiddle = true;
+                }
+            }
+        }
+
+        if (!flippingFromMiddle) {
+            //Calculate the possible octave change (higher and lower) without going out of the midi note range
+            while (anchorNote + anchorNote - highestNote + requiredOctaveChange + possibleLowerOctaveChange - OCTAVE >= MIN_MIDI_NOTE)
+                possibleLowerOctaveChange -= OCTAVE;
+
+            while (anchorNote + anchorNote - lowestNote + requiredOctaveChange + possibleHigherOctaveChange + OCTAVE <= MAX_MIDI_NOTE)
+                possibleHigherOctaveChange += OCTAVE;
+        }
+
+        console.log(requiredOctaveChange / OCTAVE);
+        console.log(possibleLowerOctaveChange / OCTAVE);
+        console.log(possibleHigherOctaveChange / OCTAVE);
+    }
+
+    reader.readAsBinaryString(file);
 }
 
 function sendFlipRequest() {
@@ -203,7 +284,7 @@ function updateStopTime() {
     Tone.Transport.stop(Tone.now() + " + " + sequenceEnd + " - " + pausedOffset + "i");
 }
 
-$('body').keyup(function(e) {
+$('body').keyup(function (e) {
     if (e.keyCode == 32) {
         //"Click" the flip-button when spacebar is pressed
         $("#flip-button").click();
