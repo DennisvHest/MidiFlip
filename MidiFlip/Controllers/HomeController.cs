@@ -23,10 +23,10 @@ namespace MidiFlip.Controllers {
         [HttpPost]
         public ActionResult Flip() {
             if (Request.Files.Count != 1)
-                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError);
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             if (Request.Files[0]?.ContentType != "audio/midi" && Request.Files[0]?.ContentType != "audio/mid")
-                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError);
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             Stream flippedMidi = _midiService.Flip(Request.Files[0].InputStream);
 

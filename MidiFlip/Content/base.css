@@ -89,7 +89,7 @@ button:active {
   font-family: 'Montserrat', sans-serif;
   background-color: transparent;
 }
-#browse:hover {
+#browse:not(.disabled):hover {
   background-color: white;
   color: #236dbe;
 }

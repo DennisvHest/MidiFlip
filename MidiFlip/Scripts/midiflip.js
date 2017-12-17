@@ -92,6 +92,7 @@ $("#flip-button").click(function () {
     switch (currentState) {
         case STATE.IDLE:
             $("#browse").prop("disabled", true);
+            $("#browse").addClass("disabled");
             $(this).html('<i class="fa fa-cog fa-spin fa-3x fa-fw"></i>');
             sendFlipRequest();
             break;
@@ -121,6 +122,7 @@ $("#flip-another").click(function () {
     midiDropzone.enable();
     $("#flip-button").html("FLIP");
     $("#browse").prop("disabled", false);
+    $("#browse").removeClass("disabled");
     $("#browse").html('<i class="fa fa-upload" aria-hidden="true"></i> Or browse...');
     $("#upload").slideDown("fast");
     $(this).hide();
