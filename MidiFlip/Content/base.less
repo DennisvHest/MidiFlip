@@ -4,6 +4,7 @@ body {
     background-color: #236dbe;
     font-family: 'Raleway', sans-serif;
     color: white;
+    overflow: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -29,6 +30,12 @@ button:hover {
 
 button:active {
     background-color: darken(white, 10%);
+}
+
+button[disabled], button[disabled]:hover {
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
 }
 
 #midi-dropzone {
@@ -61,6 +68,25 @@ button:active {
         }
     }
 
+    #message {
+        width: 100%;
+        margin: 10px 0;
+        border: 2px solid;
+        padding: 10px 0;
+        font-weight: bold;
+        display: none;
+
+        &.warning {
+            border-color: yellow;
+            color: yellow;
+        }
+
+        &.error {
+            border-color: darkred;
+            color: darkred;
+        }
+    }
+
     #flip-button {
         border-radius: 100%;
         width: 80px;
@@ -70,6 +96,20 @@ button:active {
         .fa-play {
             margin-left: 5px;
         }
+    }
+
+    #options {
+        width: 100%;
+        display: none;
+        margin-top: 10px;
+    }
+
+    #octave-change {
+        outline: none;
+        border: none;
+        padding: 7px;
+        width: 50px;
+        margin: 0 5px;
     }
 
     #flip-another {

@@ -2,6 +2,7 @@
   background-color: #236dbe;
   font-family: 'Raleway', sans-serif;
   color: white;
+  overflow: hidden;
 }
 h1,
 h2,
@@ -29,6 +30,12 @@ button:hover {
 }
 button:active {
   background-color: #e6e6e6;
+}
+button[disabled],
+button[disabled]:hover {
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
 }
 #midi-dropzone {
   position: absolute;
@@ -61,6 +68,22 @@ button:active {
 #flip #upload .fa-file {
   font-size: 92px;
 }
+#flip #message {
+  width: 100%;
+  margin: 10px 0;
+  border: 2px solid;
+  padding: 10px 0;
+  font-weight: bold;
+  display: none;
+}
+#flip #message.warning {
+  border-color: yellow;
+  color: yellow;
+}
+#flip #message.error {
+  border-color: darkred;
+  color: darkred;
+}
 #flip #flip-button {
   border-radius: 100%;
   width: 80px;
@@ -69,6 +92,18 @@ button:active {
 }
 #flip #flip-button .fa-play {
   margin-left: 5px;
+}
+#flip #options {
+  width: 100%;
+  display: none;
+  margin-top: 10px;
+}
+#flip #octave-change {
+  outline: none;
+  border: none;
+  padding: 7px;
+  width: 50px;
+  margin: 0 5px;
 }
 #flip #flip-another {
   display: block;

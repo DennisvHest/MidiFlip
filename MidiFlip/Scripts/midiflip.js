@@ -11,7 +11,7 @@ var STATE = {
     PLAYING: "PLAYING",
     PAUSED: "PAUSED",
     STOPPED: "STOPPED"
-}
+};
 
 var currentState = STATE.IDLE;
 var pausedOffset = 0;
@@ -73,7 +73,7 @@ $("#midi-dropzone").dropzone({
 var midiDropzone = Dropzone.forElement("#midi-dropzone");
 
 function displayDragFeedback(event) {
-    if ($(".ripple").is(":hidden") && !(event.fromElement != null && /h1|h6|p/g.test(event.fromElement.localName))) {
+    if ($(".ripple").is(":hidden") && !(event.fromElement !== null && /h1|h6|p/g.test(event.fromElement.localName))) {
         $(".ripple").fadeIn("fast");
     }
 }
@@ -124,6 +124,7 @@ $("#flip-another").click(function () {
     Tone.Transport.stop();
     Tone.Transport.cancel();
     midiDropzone.enable();
+    $("#flip-button").prop("disabled", true);
     $("#flip-button").html("FLIP");
     $("#browse").prop("disabled", false);
     $("#browse").removeClass("disabled");
@@ -141,26 +142,21 @@ function onFileAdded(file) {
 }
 
 function checkOptions(file) {
-    reader.onload = function (e) {
+    reader.onload = function(e) {
         //Parse the midi file
         var midi = MidiConvert.parse(e.target.result);
-        console.log(midi);
 
         var anchorNote = Enumerable.from(midi.tracks)
-            .selectMany(function (t) { return t.notes })
-            .minBy(function (n) { return n.time }).midi;
+            .selectMany(function(t) { return t.notes; })
+            .minBy(function(n) { return n.time; }).midi;
 
         var highestNote = Enumerable.from(midi.tracks)
-            .selectMany(function (t) { return t.notes })
-            .max(function (n) { return n.midi });
+            .selectMany(function(t) { return t.notes; })
+            .max(function(n) { return n.midi; });
 
         var lowestNote = Enumerable.from(midi.tracks)
-            .selectMany(function (t) { return t.notes })
-            .min(function (n) { return n.midi });
-
-        console.log(anchorNote);
-        console.log(highestNote);
-        console.log(lowestNote);
+            .selectMany(function(t) { return t.notes; })
+            .min(function(n) { return n.midi; });
 
         var requiredOctaveChange = 0;
         var possibleHigherOctaveChange = 0;
@@ -199,32 +195,40 @@ function checkOptions(file) {
 
         if (!flippingFromMiddle) {
             //Calculate the possible octave change (higher and lower) without going out of the midi note range
-            while (anchorNote + anchorNote - highestNote + requiredOctaveChange + possibleLowerOctaveChange - OCTAVE >= MIN_MIDI_NOTE)
+            while (anchorNote + anchorNote - highestNote + requiredOctaveChange + possibleLowerOctaveChange - OCTAVE >=
+                MIN_MIDI_NOTE)
                 possibleLowerOctaveChange -= OCTAVE;
 
-            while (anchorNote + anchorNote - lowestNote + requiredOctaveChange + possibleHigherOctaveChange + OCTAVE <= MAX_MIDI_NOTE)
+            while (anchorNote + anchorNote - lowestNote + requiredOctaveChange + possibleHigherOctaveChange + OCTAVE <=
+                MAX_MIDI_NOTE)
                 possibleHigherOctaveChange += OCTAVE;
+        } else {
+            $("#message").attr("class", "warning");
+            $("#message").slideDown("fast");
         }
 
-        console.log(requiredOctaveChange / OCTAVE);
-        console.log(possibleLowerOctaveChange / OCTAVE);
-        console.log(possibleHigherOctaveChange / OCTAVE);
-
         //Fill dropdown with octave change options
-        $("#octave-change").empty();
+        var octaveDropdown = $("#octave-change");
+
+        octaveDropdown.empty();
 
         var text;
 
-        for (var octaveChange = possibleHigherOctaveChange / OCTAVE; octaveChange >= possibleLowerOctaveChange / OCTAVE; octaveChange--) {
+        for (var octaveChange = possibleHigherOctaveChange / OCTAVE;
+            octaveChange >= possibleLowerOctaveChange / OCTAVE;
+            octaveChange--) {
             text = octaveChange > 0 ? "+" + octaveChange : octaveChange;
 
             if (octaveChange === 0) {
-                $("#octave-change").append('<option value="' + octaveChange + '" selected>' + text + '</option>');
+                octaveDropdown.append('<option value="' + octaveChange + '" selected>' + text + '</option>');
             } else {
-                $("#octave-change").append('<option value="' + octaveChange + '">' + text + '</option>');
+                octaveDropdown.append('<option value="' + octaveChange + '">' + text + '</option>');
             }
         }
-    }
+
+        $("#options").slideDown("fast");
+        $("#flip-button").prop("disabled", false);
+    };
 
     reader.readAsBinaryString(file);
 }
@@ -251,7 +255,7 @@ function sendFlipRequest() {
 function loadMidi(buffer) {
     var blob = new Blob([buffer]);
 
-    reader.onload = function (e) {
+    reader.onload = function(e) {
         //Parse the flipped midi file
         var flippedMidi = MidiConvert.parse(e.target.result);
 
@@ -259,11 +263,12 @@ function loadMidi(buffer) {
 
         //Create a Tone part for each rack in the flipped midi
         for (var trackNr = 0; trackNr < flippedMidi.tracks.length; trackNr++) {
-            var track = flippedMidi.tracks[trackNr]
+            var track = flippedMidi.tracks[trackNr];
 
-            var midiPart = new Tone.Part(function (time, note) {
-                piano.triggerAttackRelease(note.name, note.duration, time, note.velocity);
-            }, track.notes);
+            var midiPart = new Tone.Part(function(time, note) {
+                    piano.triggerAttackRelease(note.name, note.duration, time, note.velocity);
+                },
+                track.notes);
 
             //Get the total time in seconds of the flipped midi sequence
             if (track.notes.length !== 0) {
@@ -280,8 +285,9 @@ function loadMidi(buffer) {
 
         $("#flip-button").html('<i class="fa fa-play fa-3x" aria-hidden="true"></i>');
         $("#flip-another").css("display", "block");
+        $("#options").slideUp("fast");
         $("#upload").slideUp("fast");
-    }
+    };
 
     reader.readAsBinaryString(blob);
 }
@@ -301,7 +307,7 @@ function updateStopTime() {
 }
 
 $('body').keyup(function (e) {
-    if (e.keyCode == 32) {
+    if (e.keyCode === 32) {
         //"Click" the flip-button when spacebar is pressed
         $("#flip-button").click();
     }
