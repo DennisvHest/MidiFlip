@@ -60,6 +60,9 @@ button[disabled]:hover {
 #flip select {
   pointer-events: all;
 }
+#flip h1 {
+  margin-top: 0px;
+}
 #flip #upload {
   border: 2px dashed;
   padding: 60px 10px;
@@ -86,9 +89,8 @@ button[disabled]:hover {
   border: none;
 }
 #flip #play-deck {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  margin: 0 auto;
+  display: inline-block;
 }
 #flip #flip-button,
 #flip #stop-button,
@@ -149,5 +151,10 @@ button[disabled]:hover {
 @media screen and (max-width: 768px) {
   .col-xs-offset-1 {
     margin-left: 8.333333333333332%;
+  }
+}
+@media screen and (max-height: 480px) {
+  #upload {
+    display: none !important;
   }
 }

@@ -53,6 +53,32 @@ var piano = new Tone.Sampler({
     'baseUrl': "/content/audio/"
 }).toMaster();
 
+var flipButton = $("#flip-button");
+var browseButton = $("#browse");
+var flipAnotherButton = $("#flip-another");
+var stopButton = $("#stop-button");
+var message = $("#message");
+var upload = $("#upload");
+var octaveDropdown = $("#octave-change");
+var options = $("#options");
+
+function applyBrowseText() {
+    if ($(window).height() < 480) {
+        browseButton.html('<i class="fa fa-upload" aria-hidden="true"></i> Browse...');
+    }
+    else {
+        browseButton.html('<i class="fa fa-upload" aria-hidden="true"></i> Or browse...');
+    }
+}
+
+applyBrowseText();
+
+$(window).resize(function () {
+    if (currentState === STATE.IDLE) {
+        applyBrowseText();
+    }
+});
+
 $("#midi-dropzone").dropzone({
     url: "/home/flip",
     clickable: "#browse",
@@ -92,11 +118,11 @@ function removeDragFeedback() {
     }
 }
 
-$("#flip-button").click(function () {
+flipButton.click(function () {
     switch (currentState) {
         case STATE.IDLE:
-            $("#browse").prop("disabled", true);
-            $("#browse").addClass("disabled");
+            browseButton.prop("disabled", true);
+            browseButton.addClass("disabled");
             $(this).html('<i class="fa fa-cog fa-spin fa-3x fa-fw"></i>');
             sendFlipRequest();
             break;
@@ -116,7 +142,7 @@ $("#flip-button").click(function () {
     }
 });
 
-$("#flip-another").click(function () {
+flipAnotherButton.click(function () {
     //Stop playing and eset everything
     pausedOffset = 0;
     sequenceEnd = 0;
@@ -124,21 +150,21 @@ $("#flip-another").click(function () {
     Tone.Transport.stop();
     Tone.Transport.cancel();
     midiDropzone.enable();
-    $("#flip-button").prop("disabled", true);
-    $("#flip-button").html("FLIP");
-    $("#browse").prop("disabled", false);
-    $("#browse").removeClass("disabled");
-    $("#browse").html('<i class="fa fa-upload" aria-hidden="true"></i> Or browse...');
-    $("#message").slideUp("fast");
-    $("#upload").slideDown("fast");
+    flipButton.prop("disabled", true);
+    flipButton.html("FLIP");
+    browseButton.prop("disabled", false);
+    browseButton.removeClass("disabled");
+    applyBrowseText();
+    message.slideUp("fast");
+    upload.slideDown("fast");
     $(this).hide();
-    $("#stop-button").hide();
+    stopButton.hide();
 });
 
-$("#stop-button").click(function () {
+stopButton.click(function () {
     currentState = STATE.STOPPED;
     pausedOffset = 0;
-    $("#flip-button").html('<i class="fa fa-play fa-3x" aria-hidden="true"></i>');
+    flipButton.html('<i class="fa fa-play fa-3x" aria-hidden="true"></i>');
     Tone.Transport.stop();
 });
 
@@ -146,7 +172,9 @@ function onFileAdded(file) {
     if (file.type === "audio/mid" || file.type === "audio/midi") {
         checkOptions(file);
         inputFile = file;
-        $("#browse").html(file.name);
+        browseButton.html(file.name);
+    } else {
+        showMessage("error", "Only .mid and .midi files are allowed!");
     }
 }
 
@@ -206,7 +234,7 @@ function checkOptions(file) {
             }
 
             if (!flippingFromMiddle) {
-                $("#message").slideUp("fast");
+                message.slideUp("fast");
 
                 //Calculate the possible octave change (higher and lower) without going out of the midi note range
                 while (anchorNote + anchorNote - highestNote + requiredOctaveChange + possibleLowerOctaveChange - OCTAVE >=
@@ -222,8 +250,6 @@ function checkOptions(file) {
             }
 
             //Fill dropdown with octave change options
-            var octaveDropdown = $("#octave-change");
-
             octaveDropdown.empty();
 
             var text;
@@ -240,16 +266,16 @@ function checkOptions(file) {
                 }
             }
 
-            $("#options").slideDown("fast");
-            $("#flip-button").prop("disabled", false);
+            options.slideDown("fast");
+            flipButton.prop("disabled", false);
         } catch (err) {
-            $("#flip-button").prop("disabled", true);
+            flipButton.prop("disabled", true);
             if (err === "Bad .mid file - header not found") {
                 showMessage("error", "This MIDI-file could not be read!");
             } else {
                 showMessage("error", "Something whent wrong while reading this MIDI-file!");
             }
-            $("#options").slideUp("fast");
+            options.slideUp("fast");
         }
     };
 
@@ -266,7 +292,7 @@ function sendFlipRequest() {
 
     var formData = new FormData();
     formData.append(inputFile.name, inputFile);
-    formData.append("octaveChange", $("#octave-change").val());
+    formData.append("octaveChange", octaveDropdown.val());
 
     flipRequest.onload = function () {
         loadMidi(flipRequest.response);
@@ -306,12 +332,12 @@ function loadMidi(buffer) {
 
         currentState = STATE.LOADED;
 
-        $("#flip-button").html('<i class="fa fa-play fa-3x" aria-hidden="true"></i>');
-        $("#flip-another").show();
-        $("#stop-button").show();
-        $("#message").slideUp("fast");
-        $("#options").slideUp("fast");
-        $("#upload").slideUp("fast");
+        flipButton.html('<i class="fa fa-play fa-3x" aria-hidden="true"></i>');
+        flipAnotherButton.show();
+        stopButton.show();
+        message.slideUp("fast");
+        options.slideUp("fast");
+        upload.slideUp("fast");
     };
 
     reader.readAsBinaryString(blob);
@@ -323,7 +349,7 @@ Tone.Transport.on("stop", function() {
     if (currentState !== STATE.STOPPED && currentState !== STATE.PAUSED && currentState !== STATE.IDLE) {
         pausedOffset = 0;
         currentState = STATE.STOPPED;
-        $("#flip-button").html('<i class="fa fa-repeat fa-3x" aria-hidden="true"></i>');
+        flipButton.html('<i class="fa fa-repeat fa-3x" aria-hidden="true"></i>');
     }
 });
 
@@ -334,12 +360,12 @@ function updateStopTime() {
 $('body').keyup(function (e) {
     if (e.keyCode === 32) {
         //"Click" the flip-button when spacebar is pressed
-        $("#flip-button").click();
+        flipButton.click();
     }
 });
 
-function showMessage(level, message) {
-    $("#message").attr("class", level);
-    $("#message").html('<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + message);
-    $("#message").slideDown("fast");
+function showMessage(level, msg) {
+    message.attr("class", level);
+    message.html('<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + msg);
+    message.slideDown("fast");
 }
