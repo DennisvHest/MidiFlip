@@ -129,8 +129,17 @@ $("#flip-another").click(function () {
     $("#browse").prop("disabled", false);
     $("#browse").removeClass("disabled");
     $("#browse").html('<i class="fa fa-upload" aria-hidden="true"></i> Or browse...');
+    $("#message").slideUp("fast");
     $("#upload").slideDown("fast");
     $(this).hide();
+    $("#stop-button").hide();
+});
+
+$("#stop-button").click(function () {
+    currentState = STATE.STOPPED;
+    pausedOffset = 0;
+    $("#flip-button").html('<i class="fa fa-play fa-3x" aria-hidden="true"></i>');
+    Tone.Transport.stop();
 });
 
 function onFileAdded(file) {
@@ -142,92 +151,106 @@ function onFileAdded(file) {
 }
 
 function checkOptions(file) {
-    reader.onload = function(e) {
+    reader.onload = function (e) {
         //Parse the midi file
-        var midi = MidiConvert.parse(e.target.result);
+        var midi = null;
 
-        var anchorNote = Enumerable.from(midi.tracks)
-            .selectMany(function(t) { return t.notes; })
-            .minBy(function(n) { return n.time; }).midi;
+        try {
+            midi = MidiConvert.parse(e.target.result);
 
-        var highestNote = Enumerable.from(midi.tracks)
-            .selectMany(function(t) { return t.notes; })
-            .max(function(n) { return n.midi; });
+            var anchorNote = Enumerable.from(midi.tracks)
+                .selectMany(function (t) { return t.notes; })
+                .minBy(function (n) { return n.time; }).midi;
 
-        var lowestNote = Enumerable.from(midi.tracks)
-            .selectMany(function(t) { return t.notes; })
-            .min(function(n) { return n.midi; });
+            var highestNote = Enumerable.from(midi.tracks)
+                .selectMany(function (t) { return t.notes; })
+                .max(function (n) { return n.midi; });
 
-        var requiredOctaveChange = 0;
-        var possibleHigherOctaveChange = 0;
-        var possibleLowerOctaveChange = 0;
+            var lowestNote = Enumerable.from(midi.tracks)
+                .selectMany(function (t) { return t.notes; })
+                .min(function (n) { return n.midi; });
 
-        var outOfRange;
+            var requiredOctaveChange = 0;
+            var possibleHigherOctaveChange = 0;
+            var possibleLowerOctaveChange = 0;
 
-        var flippingFromMiddle = false;
+            var outOfRange;
 
-        //Check the required octave change as to not go outside of the midi note range
-        if (anchorNote - lowestNote > highestNote - anchorNote) {
-            outOfRange = anchorNote + (anchorNote - lowestNote);
+            var flippingFromMiddle = false;
 
-            if (outOfRange > MAX_MIDI_NOTE) {
-                while (outOfRange + requiredOctaveChange > MAX_MIDI_NOTE)
-                    requiredOctaveChange -= OCTAVE;
+            //Check the required octave change as to not go outside of the midi note range
+            if (anchorNote - lowestNote > highestNote - anchorNote) {
+                outOfRange = anchorNote + (anchorNote - lowestNote);
 
-                if (lowestNote + requiredOctaveChange < MIN_MIDI_NOTE) {
-                    requiredOctaveChange = 0;
-                    flippingFromMiddle = true;
+                if (outOfRange > MAX_MIDI_NOTE) {
+                    while (outOfRange + requiredOctaveChange > MAX_MIDI_NOTE)
+                        requiredOctaveChange -= OCTAVE;
+
+                    if (lowestNote + requiredOctaveChange < MIN_MIDI_NOTE) {
+                        requiredOctaveChange = 0;
+                        flippingFromMiddle = true;
+                    }
                 }
-            }
-        } else {
-            outOfRange = anchorNote - (highestNote - anchorNote);
-
-            if (outOfRange < MIN_MIDI_NOTE) {
-                while (outOfRange + requiredOctaveChange < MIN_MIDI_NOTE)
-                    requiredOctaveChange += OCTAVE;
-
-                if (highestNote + requiredOctaveChange > MAX_MIDI_NOTE) {
-                    requiredOctaveChange = 0;
-                    flippingFromMiddle = true;
-                }
-            }
-        }
-
-        if (!flippingFromMiddle) {
-            //Calculate the possible octave change (higher and lower) without going out of the midi note range
-            while (anchorNote + anchorNote - highestNote + requiredOctaveChange + possibleLowerOctaveChange - OCTAVE >=
-                MIN_MIDI_NOTE)
-                possibleLowerOctaveChange -= OCTAVE;
-
-            while (anchorNote + anchorNote - lowestNote + requiredOctaveChange + possibleHigherOctaveChange + OCTAVE <=
-                MAX_MIDI_NOTE)
-                possibleHigherOctaveChange += OCTAVE;
-        } else {
-            $("#message").attr("class", "warning");
-            $("#message").slideDown("fast");
-        }
-
-        //Fill dropdown with octave change options
-        var octaveDropdown = $("#octave-change");
-
-        octaveDropdown.empty();
-
-        var text;
-
-        for (var octaveChange = possibleHigherOctaveChange / OCTAVE;
-            octaveChange >= possibleLowerOctaveChange / OCTAVE;
-            octaveChange--) {
-            text = octaveChange > 0 ? "+" + octaveChange : octaveChange;
-
-            if (octaveChange === 0) {
-                octaveDropdown.append('<option value="' + octaveChange + '" selected>' + text + '</option>');
             } else {
-                octaveDropdown.append('<option value="' + octaveChange + '">' + text + '</option>');
-            }
-        }
+                outOfRange = anchorNote - (highestNote - anchorNote);
 
-        $("#options").slideDown("fast");
-        $("#flip-button").prop("disabled", false);
+                if (outOfRange < MIN_MIDI_NOTE) {
+                    while (outOfRange + requiredOctaveChange < MIN_MIDI_NOTE)
+                        requiredOctaveChange += OCTAVE;
+
+                    if (highestNote + requiredOctaveChange > MAX_MIDI_NOTE) {
+                        requiredOctaveChange = 0;
+                        flippingFromMiddle = true;
+                    }
+                }
+            }
+
+            if (!flippingFromMiddle) {
+                $("#message").slideUp("fast");
+
+                //Calculate the possible octave change (higher and lower) without going out of the midi note range
+                while (anchorNote + anchorNote - highestNote + requiredOctaveChange + possibleLowerOctaveChange - OCTAVE >=
+                    MIN_MIDI_NOTE)
+                    possibleLowerOctaveChange -= OCTAVE;
+
+                while (anchorNote + anchorNote - lowestNote + requiredOctaveChange + possibleHigherOctaveChange + OCTAVE <=
+                    MAX_MIDI_NOTE)
+                    possibleHigherOctaveChange += OCTAVE;
+            } else {
+                showMessage("warning",
+                    "This MIDI cannot be flipped around the first note, so it will be flipped from the middle.");
+            }
+
+            //Fill dropdown with octave change options
+            var octaveDropdown = $("#octave-change");
+
+            octaveDropdown.empty();
+
+            var text;
+
+            for (var octaveChange = possibleHigherOctaveChange / OCTAVE;
+                octaveChange >= possibleLowerOctaveChange / OCTAVE;
+                octaveChange--) {
+                text = octaveChange > 0 ? "+" + octaveChange : octaveChange;
+
+                if (octaveChange === 0) {
+                    octaveDropdown.append('<option value="' + octaveChange + '" selected>' + text + '</option>');
+                } else {
+                    octaveDropdown.append('<option value="' + octaveChange + '">' + text + '</option>');
+                }
+            }
+
+            $("#options").slideDown("fast");
+            $("#flip-button").prop("disabled", false);
+        } catch (err) {
+            $("#flip-button").prop("disabled", true);
+            if (err === "Bad .mid file - header not found") {
+                showMessage("error", "This MIDI-file could not be read!");
+            } else {
+                showMessage("error", "Something whent wrong while reading this MIDI-file!");
+            }
+            $("#options").slideUp("fast");
+        }
     };
 
     reader.readAsBinaryString(file);
@@ -255,7 +278,7 @@ function sendFlipRequest() {
 function loadMidi(buffer) {
     var blob = new Blob([buffer]);
 
-    reader.onload = function(e) {
+    reader.onload = function (e) {
         //Parse the flipped midi file
         var flippedMidi = MidiConvert.parse(e.target.result);
 
@@ -265,9 +288,9 @@ function loadMidi(buffer) {
         for (var trackNr = 0; trackNr < flippedMidi.tracks.length; trackNr++) {
             var track = flippedMidi.tracks[trackNr];
 
-            var midiPart = new Tone.Part(function(time, note) {
-                    piano.triggerAttackRelease(note.name, note.duration, time, note.velocity);
-                },
+            var midiPart = new Tone.Part(function (time, note) {
+                piano.triggerAttackRelease(note.name, note.duration, time, note.velocity);
+            },
                 track.notes);
 
             //Get the total time in seconds of the flipped midi sequence
@@ -284,7 +307,9 @@ function loadMidi(buffer) {
         currentState = STATE.LOADED;
 
         $("#flip-button").html('<i class="fa fa-play fa-3x" aria-hidden="true"></i>');
-        $("#flip-another").css("display", "block");
+        $("#flip-another").show();
+        $("#stop-button").show();
+        $("#message").slideUp("fast");
         $("#options").slideUp("fast");
         $("#upload").slideUp("fast");
     };
@@ -294,8 +319,8 @@ function loadMidi(buffer) {
 
 Tone.Transport.on("start", updateStopTime);
 
-Tone.Transport.on("stop", function stopPlaying() {
-    if (currentState !== STATE.PAUSED && currentState !== STATE.IDLE) {
+Tone.Transport.on("stop", function() {
+    if (currentState !== STATE.STOPPED && currentState !== STATE.PAUSED && currentState !== STATE.IDLE) {
         pausedOffset = 0;
         currentState = STATE.STOPPED;
         $("#flip-button").html('<i class="fa fa-repeat fa-3x" aria-hidden="true"></i>');
@@ -312,3 +337,9 @@ $('body').keyup(function (e) {
         $("#flip-button").click();
     }
 });
+
+function showMessage(level, message) {
+    $("#message").attr("class", level);
+    $("#message").html('<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + message);
+    $("#message").slideDown("fast");
+}

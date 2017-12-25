@@ -70,25 +70,48 @@ button[disabled]:hover {
 }
 #flip #message {
   width: 100%;
-  margin: 10px 0;
+  margin-top: 10px;
   border: 2px solid;
-  padding: 10px 0;
-  font-weight: bold;
+  padding: 10px;
   display: none;
+  font-size: 12px;
 }
 #flip #message.warning {
-  border-color: yellow;
-  color: yellow;
+  border-color: white;
+  color: white;
 }
 #flip #message.error {
-  border-color: darkred;
-  color: darkred;
+  background-color: darkred;
+  color: white;
+  border: none;
+}
+#flip #play-deck {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+#flip #flip-button,
+#flip #stop-button,
+#flip #flip-another {
+  border-radius: 100%;
+  width: 40px;
+  height: 40px;
+  margin-top: 10px;
+  display: inline-block;
+  float: left;
+}
+#flip #flip-button i,
+#flip #stop-button i,
+#flip #flip-another i {
+  font-weight: bold;
+}
+#flip #stop-button,
+#flip #flip-another {
+  display: none;
 }
 #flip #flip-button {
-  border-radius: 100%;
   width: 80px;
   height: 80px;
-  margin-top: 10px;
 }
 #flip #flip-button .fa-play {
   margin-left: 5px;
@@ -104,17 +127,6 @@ button[disabled]:hover {
   padding: 7px;
   width: 50px;
   margin: 0 5px;
-}
-#flip #flip-another {
-  display: block;
-  margin-top: 10px;
-  font-weight: bold;
-  font-family: 'Montserrat', sans-serif;
-  display: none;
-}
-#flip #flip-another:hover {
-  text-decoration: underline;
-  cursor: pointer;
 }
 #browse {
   border: 2px solid white;

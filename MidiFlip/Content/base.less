@@ -70,28 +70,50 @@ button[disabled], button[disabled]:hover {
 
     #message {
         width: 100%;
-        margin: 10px 0;
+        margin-top: 10px;
         border: 2px solid;
-        padding: 10px 0;
-        font-weight: bold;
+        padding: 10px;
         display: none;
+        font-size: 12px;
 
         &.warning {
-            border-color: yellow;
-            color: yellow;
+            border-color: white;
+            color: white;
         }
 
         &.error {
-            border-color: darkred;
-            color: darkred;
+            background-color: darkred;
+            color: white;
+            border: none;
         }
     }
 
-    #flip-button {
+    #play-deck {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    #flip-button, #stop-button, #flip-another {
         border-radius: 100%;
+        width: 40px;
+        height: 40px;
+        margin-top: 10px;
+        display: inline-block;
+        float: left;
+
+        i {
+            font-weight: bold;
+        }
+    }
+
+    #stop-button, #flip-another {
+        display: none;
+    }
+
+    #flip-button {
         width: 80px;
         height: 80px;
-        margin-top: 10px;
 
         .fa-play {
             margin-left: 5px;
@@ -110,19 +132,6 @@ button[disabled], button[disabled]:hover {
         padding: 7px;
         width: 50px;
         margin: 0 5px;
-    }
-
-    #flip-another {
-        display: block;
-        margin-top: 10px;
-        font-weight: bold;
-        font-family: 'Montserrat', sans-serif;
-        display: none;
-    }
-
-    #flip-another:hover {
-        text-decoration: underline;
-        cursor: pointer;
     }
 }
 
