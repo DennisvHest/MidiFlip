@@ -1,5 +1,5 @@
 ﻿@section Css {
-<link href="~/Content/ripple.css" rel="stylesheet" />
+    <link href="~/Content/ripple.css" rel="stylesheet" />
 }
 
 <div id="midi-dropzone">
@@ -14,8 +14,22 @@
     <button id="browse" type="button"><i class="fa fa-upload" aria-hidden="true"></i> Or browse...</button>
     <div id="message" class="warning">Warning</div>
     <div id="options">
-        <b>Change octave:</b>
-        <select id="octave-change"></select>
+        <div id="instrument-select" class="col-xs-6">
+            <b>Select instrument:</b>
+            <p>
+                <input type="radio" id="piano" name="instrument" data-instrument="0" checked>
+                <label for="piano">Piano</label>
+            </p>
+            <p>
+                <input type="radio" id="triangle-synth" name="instrument" data-instrument="1">
+                <label for="triangle-synth">Triangle Synth</label>
+            </p>
+        </div>
+        <div class="col-xs-6">
+            <b>Change octave:</b>
+            <select id="octave-change"></select>
+        </div>
+        <div class="col-xs-12"><i id="mobile-piano-warning"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> The piano instrument might not play correctly on mobile devices.</i></div>
     </div>
     <div id="play-deck">
         <button id="flip-another"><i class="fa fa-angle-left" aria-hidden="true"></i></button>
@@ -33,5 +47,8 @@
     <script src="~/Scripts/midiconvert.js"></script>
     <script src="~/Scripts/tone.min.js"></script>
     <script src="~/Scripts/linq.min.js"></script>
+    <script src="~/Scripts/constants.js"></script>
+    <script src="~/Scripts/player.js"></script>
     <script src="~/Scripts/midiflip.js"></script>
+    <script src="~/Scripts/ui.js"></script>
 }

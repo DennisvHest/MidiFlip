@@ -280,6 +280,7 @@
     <Content Include="fonts\FontAwesome.otf" />
     <None Include="Properties\PublishProfiles\MidiFlip - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\constants.js" />
     <Content Include="Scripts\dropzone.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery.min.js" />
@@ -287,7 +288,9 @@
     <Content Include="Scripts\linq.min.js" />
     <Content Include="Scripts\midiconvert.js" />
     <Content Include="Scripts\midiflip.js" />
+    <Content Include="Scripts\player.js" />
     <Content Include="Scripts\tone.min.js" />
+    <Content Include="Scripts\ui.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

@@ -38,6 +38,61 @@ button[disabled], button[disabled]:hover {
     color: white;
 }
 
+[type="radio"]:checked,
+[type="radio"]:not(:checked) {
+    position: absolute;
+    left: -9999px;
+}
+
+[type="radio"]:checked + label,
+[type="radio"]:not(:checked) + label {
+    position: relative;
+    padding-left: 28px;
+    cursor: pointer;
+    line-height: 20px;
+    display: inline-block;
+}
+
+[type="radio"]:checked + label:before,
+[type="radio"]:not(:checked) + label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #ddd;
+    border-radius: 100%;
+    background: transparent;
+    border: 1px solid white;
+}
+
+[type="radio"]:checked + label:after,
+[type="radio"]:not(:checked) + label:after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: white;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    border-radius: 100%;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+[type="radio"]:not(:checked) + label:after {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+}
+
+[type="radio"]:checked + label:after {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}
+
 #midi-dropzone {
     position: absolute;
     width: 100%;
@@ -54,7 +109,7 @@ button[disabled], button[disabled]:hover {
     padding: 0px;
     pointer-events: none;
 
-    button, p, h1, a, span, select {
+    button, p, h1, a, span, select, input, label, span {
         pointer-events: all;
     }
 
@@ -127,6 +182,25 @@ button[disabled], button[disabled]:hover {
         width: 100%;
         display: none;
         margin-top: 10px;
+        border-bottom: 1px solid white;
+        padding-bottom: 10px;
+
+        b {
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        #instrument-select {
+            text-align: left;
+
+            p {
+                margin: 0px;
+            }
+        }
+
+        label {
+            font-weight: normal;
+        }
     }
 
     #octave-change {
@@ -135,6 +209,11 @@ button[disabled], button[disabled]:hover {
         padding: 7px;
         width: 50px;
         margin: 0 5px;
+    }
+
+    #mobile-piano-warning {
+        display: none;
+        font-size: 9px;
     }
 }
 
@@ -168,5 +247,16 @@ button[disabled], button[disabled]:hover {
 @media screen and (max-height: 480px) {
     #upload {
         display: none !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #flip {
+        position: relative;
+        top: initial;
+        left: initial;
+        transform: none;
+        width: 100%;
+        padding: 20px;
     }
 }
