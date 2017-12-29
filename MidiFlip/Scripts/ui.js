@@ -11,7 +11,7 @@ function applyBrowseText() {
 applyBrowseText();
 
 $(window).resize(function () {
-    if (currentState === STATE.IDLE) {
+    if (currentState === STATE.IDLE && inputFile === undefined) {
         applyBrowseText();
     }
 });
@@ -96,6 +96,7 @@ flipAnotherButton.click(function () {
     pausedOffset = 0;
     sequenceEnd = 0;
     currentState = STATE.IDLE;
+    inputFile = undefined;
     Tone.Transport.stop();
     Tone.Transport.cancel();
     midiDropzone.enable();
@@ -118,7 +119,7 @@ stopButton.click(function () {
 });
 
 function onFileAdded(file) {
-    if (file.type === "audio/mid" || file.type === "audio/midi") {
+    if (file.type === "audio/mid" || file.type === "audio/midi" || file.type === "audio/x-midi") {
         checkOptions(file);
         inputFile = file;
         browseButton.html(file.name);
