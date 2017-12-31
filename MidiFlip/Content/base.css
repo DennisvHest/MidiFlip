@@ -233,6 +233,21 @@ button[disabled]:hover,
   width: 100%;
   margin: 10px 0;
 }
+#credit {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+}
+#credit a {
+  font-weight: bold;
+}
+#credit a:focus {
+  color: white;
+}
 /* Device specific */
 @media screen and (max-width: 768px) {
   body {
@@ -255,5 +270,11 @@ button[disabled]:hover,
     transform: none;
     width: 100%;
     padding: 20px;
+  }
+  #credit {
+    position: relative;
+    bottom: initial;
+    left: initial;
+    transform: none;
   }
 }
