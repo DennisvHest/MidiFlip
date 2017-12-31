@@ -20,12 +20,18 @@ namespace MidiFlip.Services {
 
             //The anchor note to flip everything else around
             float anchorNote = midi.Tracks
-                .Where(t => t.Events.OfType<NoteVoiceMidiEvent>().Any())
+                .Where(t => t.Events.OfType<NoteVoiceMidiEvent>().Any() && t.Events.OfType<NoteVoiceMidiEvent>().Any(n => n.Channel != 9 && n.Channel != 10))
                 .Select(t => t.Events.OfType<NoteVoiceMidiEvent>().First())
                 .OrderBy(n => n.DeltaTime).FirstOrDefault().Note;
 
-            int highestNote = midi.Tracks.SelectMany(t => t.Events.OfType<NoteVoiceMidiEvent>()).Max(e => e.Note);
-            int lowestNote = midi.Tracks.SelectMany(t => t.Events.OfType<NoteVoiceMidiEvent>()).Min(e => e.Note);
+            int highestNote = midi.Tracks
+                .Where(t => t.Events.OfType<NoteVoiceMidiEvent>().Any(n => n.Channel != 9 && n.Channel != 10))
+                .SelectMany(t => t.Events.OfType<NoteVoiceMidiEvent>())
+                .Max(e => e.Note);
+            int lowestNote = midi.Tracks
+                .Where(t => t.Events.OfType<NoteVoiceMidiEvent>().Any(n => n.Channel != 9 && n.Channel != 10))
+                .SelectMany(t => t.Events.OfType<NoteVoiceMidiEvent>())
+                .Min(e => e.Note);
 
             int octaveChange = 0; //Global octave change required for this sequence
 
@@ -69,7 +75,7 @@ namespace MidiFlip.Services {
 
             //Flip all notes
             foreach (MidiTrack track in midi.Tracks) {
-                IEnumerable<NoteVoiceMidiEvent> noteEvents = track.OfType<NoteVoiceMidiEvent>();
+                IEnumerable<NoteVoiceMidiEvent> noteEvents = track.OfType<NoteVoiceMidiEvent>().Where(n => n.Channel != 9 && n.Channel != 10);
 
                 if (!noteEvents.Any()) continue; //Nothing to flip
 

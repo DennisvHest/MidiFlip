@@ -10,14 +10,17 @@ function checkOptions(file) {
             midi = MidiConvert.parse(e.target.result);
 
             var anchorNote = Enumerable.from(midi.tracks)
+                .where(t => !t.isPercussion)
                 .selectMany(function (t) { return t.notes; })
                 .minBy(function (n) { return n.time; }).midi;
 
             var highestNote = Enumerable.from(midi.tracks)
+                .where(t => !t.isPercussion)
                 .selectMany(function (t) { return t.notes; })
                 .max(function (n) { return n.midi; });
 
             var lowestNote = Enumerable.from(midi.tracks)
+                .where(t => !t.isPercussion)
                 .selectMany(function (t) { return t.notes; })
                 .min(function (n) { return n.midi; });
 
@@ -136,6 +139,8 @@ function loadMidi(buffer) {
         //Create a Tone part for each rack in the flipped midi
         for (var trackNr = 0; trackNr < flippedMidi.tracks.length; trackNr++) {
             var track = flippedMidi.tracks[trackNr];
+
+            if (track.isPercussion) continue; //Ignore percussion tracks
 
             var midiPart = new Tone.Part(function (time, note) {
                 instrument.triggerAttackRelease(note.name, note.duration, time, note.velocity);
