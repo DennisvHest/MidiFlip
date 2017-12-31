@@ -27,14 +27,17 @@
         </div>
         <div class="col-xs-6">
             <b>Change octave:</b>
-            <select id="octave-change"></select>
+            <select id="octave-change" name="octaveChange"></select>
         </div>
         <div class="col-xs-12"><i id="mobile-piano-warning"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> The piano instrument might not play correctly on mobile devices.</i></div>
     </div>
     <div id="play-deck">
-        <button id="flip-another"><i class="fa fa-angle-left" aria-hidden="true"></i></button>
-        <button id="flip-button" type="submit" disabled>FLIP</button>
-        <button id="stop-button"><i class="fa fa-stop" aria-hidden="true"></i></button>
+        <button id="flip-another" type="button"><i class="fa fa-angle-left" aria-hidden="true"></i></button>
+        <button id="flip-button" type="button" disabled>FLIP</button>
+        <button id="stop-button" type="button"><i class="fa fa-stop" aria-hidden="true"></i></button>
+    </div>
+    <div class="col-xs-12">
+        <a id="download-button" title="Download"><i class="fa fa-download" aria-hidden="true"></i></a>
     </div>
 </div>
 
@@ -47,8 +50,6 @@
     <script src="~/Scripts/midiconvert.js"></script>
     <script src="~/Scripts/tone.min.js"></script>
     <script src="~/Scripts/linq.min.js"></script>
-    <script src="~/Scripts/constants.js"></script>
-    <script src="~/Scripts/player.js"></script>
-    <script src="~/Scripts/midiflip.js"></script>
-    <script src="~/Scripts/ui.js"></script>
+
+    @Scripts.Render("~/bundles/customjs")
 }

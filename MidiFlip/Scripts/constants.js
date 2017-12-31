@@ -6,6 +6,7 @@ var flipButton = $("#flip-button");
 var browseButton = $("#browse");
 var flipAnotherButton = $("#flip-another");
 var stopButton = $("#stop-button");
+var downloadButton = $("#download-button");
 var message = $("#message");
 var upload = $("#upload");
 var octaveDropdown = $("#octave-change");

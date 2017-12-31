@@ -15,7 +15,7 @@ a, a:hover, a:active {
     color: white;
 }
 
-button {
+button, #download-button {
     background-color: white;
     color: @base;
     border: none;
@@ -24,15 +24,16 @@ button {
     outline: none;
 }
 
-button:hover {
+button:hover:not(:disabled), #download-button:hover:not(:disabled) {
     background-color: darken(white, 5%);
+    cursor: pointer;
 }
 
-button:active {
+button:active, #download-button:active {
     background-color: darken(white, 10%);
 }
 
-button[disabled], button[disabled]:hover {
+button[disabled], button[disabled]:hover, #download-button[disabled], #download-button[disabled]:hover {
     background-color: transparent;
     border: 1px solid white;
     color: white;
@@ -152,17 +153,20 @@ button[disabled], button[disabled]:hover {
         display: inline-block;
     }
 
-    #flip-button, #stop-button, #flip-another {
+    #flip-button, #stop-button, #flip-another, #download-button {
         border-radius: 100%;
         width: 40px;
         height: 40px;
         margin-top: 10px;
         display: inline-block;
-        float: left;
 
         i {
             font-weight: bold;
         }
+    }
+
+    #flip-button, #stop-button, #flip-another {
+        float: left;
     }
 
     #stop-button, #flip-another {
@@ -214,6 +218,10 @@ button[disabled], button[disabled]:hover {
     #mobile-piano-warning {
         display: none;
         font-size: 9px;
+    }
+
+    #download-button {
+        display: none;
     }
 }
 

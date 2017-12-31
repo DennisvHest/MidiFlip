@@ -155,9 +155,13 @@ function loadMidi(buffer) {
 
         currentState = STATE.LOADED;
 
+        downloadButton[0].href = window.URL.createObjectURL(blob, { type: inputFile.type });
+        downloadButton[0].download = inputFile.name;
+
         flipButton.html('<i class="fa fa-play fa-3x" aria-hidden="true"></i>');
         flipAnotherButton.show();
         stopButton.show();
+        downloadButton.css("display", "inline-block");
         message.slideUp("fast");
         options.slideUp("fast");
         upload.slideUp("fast");

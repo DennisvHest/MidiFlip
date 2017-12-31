@@ -17,7 +17,8 @@ a:hover,
 a:active {
   color: white;
 }
-button {
+button,
+#download-button {
   background-color: white;
   color: #236dbe;
   border: none;
@@ -25,14 +26,19 @@ button {
   font-family: 'Montserrat', sans-serif;
   outline: none;
 }
-button:hover {
+button:hover:not(:disabled),
+#download-button:hover:not(:disabled) {
   background-color: #f2f2f2;
+  cursor: pointer;
 }
-button:active {
+button:active,
+#download-button:active {
   background-color: #e6e6e6;
 }
 button[disabled],
-button[disabled]:hover {
+button[disabled]:hover,
+#download-button[disabled],
+#download-button[disabled]:hover {
   background-color: transparent;
   border: 1px solid white;
   color: white;
@@ -146,18 +152,24 @@ button[disabled]:hover {
 }
 #flip #flip-button,
 #flip #stop-button,
-#flip #flip-another {
+#flip #flip-another,
+#flip #download-button {
   border-radius: 100%;
   width: 40px;
   height: 40px;
   margin-top: 10px;
   display: inline-block;
-  float: left;
 }
 #flip #flip-button i,
 #flip #stop-button i,
-#flip #flip-another i {
+#flip #flip-another i,
+#flip #download-button i {
   font-weight: bold;
+}
+#flip #flip-button,
+#flip #stop-button,
+#flip #flip-another {
+  float: left;
 }
 #flip #stop-button,
 #flip #flip-another {
@@ -200,6 +212,9 @@ button[disabled]:hover {
 #flip #mobile-piano-warning {
   display: none;
   font-size: 9px;
+}
+#flip #download-button {
+  display: none;
 }
 #browse {
   border: 2px solid white;

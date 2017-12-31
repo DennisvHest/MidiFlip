@@ -100,6 +100,7 @@ flipAnotherButton.click(function () {
     Tone.Transport.stop();
     Tone.Transport.cancel();
     midiDropzone.enable();
+    downloadButton.hide();
     flipButton.prop("disabled", true);
     flipButton.html("FLIP");
     browseButton.prop("disabled", false);
@@ -119,7 +120,7 @@ stopButton.click(function () {
 });
 
 function onFileAdded(file) {
-    if (file.type === "audio/mid" || file.type === "audio/midi" || file.type === "audio/x-midi") {
+    if (file.type === "audio/mid" || file.type === "audio/midi") {
         checkOptions(file);
         inputFile = file;
         browseButton.html(file.name);
