@@ -10,17 +10,17 @@ function checkOptions(file) {
             midi = MidiConvert.parse(e.target.result);
 
             var anchorNote = Enumerable.from(midi.tracks)
-                .where(t => !t.isPercussion)
+                .where(function (t) { return !t.isPercussion; })
                 .selectMany(function (t) { return t.notes; })
                 .minBy(function (n) { return n.time; }).midi;
 
             var highestNote = Enumerable.from(midi.tracks)
-                .where(t => !t.isPercussion)
+                .where(function (t) { return !t.isPercussion; })
                 .selectMany(function (t) { return t.notes; })
                 .max(function (n) { return n.midi; });
 
             var lowestNote = Enumerable.from(midi.tracks)
-                .where(t => !t.isPercussion)
+                .where(function (t) { return !t.isPercussion; })
                 .selectMany(function (t) { return t.notes; })
                 .min(function (n) { return n.midi; });
 

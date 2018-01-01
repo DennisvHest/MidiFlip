@@ -74,17 +74,20 @@ flipButton.click(function () {
             browseButton.addClass("disabled");
             $(this).html('<i class="fa fa-cog fa-spin fa-3x fa-fw"></i>');
             sendFlipRequest();
+            instrument.volume.value = 0;
             break;
         case STATE.LOADED:
         case STATE.PAUSED:
         case STATE.STOPPED:
             Tone.Transport.start(Tone.now(), pausedOffset + "i");
+            instrument.volume.value = 0;
             currentState = STATE.PLAYING;
             $(this).html('<i class="fa fa-pause fa-3x" aria-hidden="true"></i>');
             break;
         case STATE.PLAYING:
             pausedOffset = Tone.Transport.ticks;
             Tone.Transport.stop();
+            instrument.volume.value = -50;
             currentState = STATE.PAUSED;
             $(this).html('<i class="fa fa-play fa-3x" aria-hidden="true"></i>');
             break;
@@ -99,6 +102,7 @@ flipAnotherButton.click(function () {
     inputFile = undefined;
     Tone.Transport.stop();
     Tone.Transport.cancel();
+    instrument.volume.value = -50;
     midiDropzone.enable();
     downloadButton.hide();
     flipButton.prop("disabled", true);
@@ -117,6 +121,7 @@ stopButton.click(function () {
     pausedOffset = 0;
     flipButton.html('<i class="fa fa-play fa-3x" aria-hidden="true"></i>');
     Tone.Transport.stop();
+    instrument.volume.value = -50;
 });
 
 function onFileAdded(file) {

@@ -5,24 +5,29 @@ using MidiFlip.App_Start;
 namespace MidiFlip {
     public class BundleConfig {
         public static void RegisterBundles(BundleCollection bundles) {
-            Bundle jsBundle = new ScriptBundle("~/bundles/basejs").Include(
+            Bundle baseJsBundle = new ScriptBundle("~/bundles/basejs").Include(
                 "~/Scripts/jquery.min.js",
                 "~/Scripts/jquery.unobtrusive-ajax.min.js",
                 "~/Scripts/bootstrap.min.js");
 
-            jsBundle.Orderer = new NonOrderingBundleOrderer();
-            bundles.Add(jsBundle);
+            baseJsBundle.Orderer = new NonOrderingBundleOrderer();
+            bundles.Add(baseJsBundle);
 
-            bundles.Add(new ScriptBundle("~/bundles/customjs").Include(
+            Bundle customJsBundle = new ScriptBundle("~/bundles/customjs").Include(
                 "~/Scripts/constants.js",
                 "~/Scripts/player.js",
                 "~/Scripts/midiflip.js",
-                "~/Scripts/ui.js"));
+                "~/Scripts/ui.js");
+
+            customJsBundle.Orderer = new NonOrderingBundleOrderer();
+            bundles.Add(customJsBundle);
 
             bundles.Add(new StyleBundle("~/Content/basecss").Include(
                       "~/Content/bootstrap.min.css",
                       "~/Content/font-awesome/css/font-awesome.min.css",
                       "~/Content/base.min.css"));
+
+            BundleTable.EnableOptimizations = true;
         }
     }
 }

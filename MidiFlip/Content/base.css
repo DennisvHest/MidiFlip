@@ -276,5 +276,6 @@ button[disabled]:hover,
     bottom: initial;
     left: initial;
     transform: none;
+    font-size: 10px;
   }
 }
