@@ -1,6 +1,6 @@
 ﻿//Small screens don't show the dropzone, so change the browse button text
 function applyBrowseText() {
-    if ($(window).height() < 480) {
+    if ($(window).height() < 550) {
         browseButton.html('<i class="fa fa-upload" aria-hidden="true"></i> Browse...');
     }
     else {

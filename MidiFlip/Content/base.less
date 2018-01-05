@@ -274,13 +274,13 @@ button[disabled], button[disabled]:hover, #download-button[disabled], #download-
     }
 }
 
-@media screen and (max-height: 480px) {
+@media screen and (max-height: 550px) {
     #upload {
         display: none !important;
     }
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 480px), screen and (max-height: 300px) {
     #flip {
         position: relative;
         top: initial;
@@ -296,5 +296,13 @@ button[disabled], button[disabled]:hover, #download-button[disabled], #download-
         left: initial;
         transform: none;
         font-size: 10px;
+        padding: 20px;
+    }
+}
+
+@media screen and (max-height: 300px) {
+    #flip, #credit {
+        width: 80%;
+        margin: 0 10%;
     }
 }

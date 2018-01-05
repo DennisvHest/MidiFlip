@@ -10,13 +10,13 @@
     <link runat="server" rel="icon" href="https://midiflip.azurewebsites.net/favicon.ico" type="image/ico" />
     @Styles.Render("~/Content/basecss")
     <link href="https://fonts.googleapis.com/css?family=Montserrat:900|Raleway" rel="stylesheet">
-    @RenderSection("css", required: false)
+    @RenderSection("css", false)
 </head>
 <body>
     <div id="content">
         @RenderBody()
     </div>
     @Scripts.Render("~/bundles/basejs")
-    @RenderSection("scripts", required: false)
+    @RenderSection("scripts", false)
 </body>
 </html>
