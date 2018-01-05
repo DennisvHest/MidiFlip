@@ -9,10 +9,17 @@ function checkOptions(file) {
         try {
             midi = MidiConvert.parse(e.target.result);
 
-            var anchorNote = Enumerable.from(midi.tracks)
-                .where(function (t) { return !t.isPercussion; })
-                .selectMany(function (t) { return t.notes; })
-                .minBy(function (n) { return n.time; }).midi;
+            Enumerable.from(midi.tracks).forEach(function(t) {
+                t.notes.forEach(function(n) {
+                    n.channel = t.channelNumber;
+                });
+            });
+
+            var anchorNote = Enumerable.from(Enumerable.from(midi.tracks)
+                .where(function(t) { return !t.isPercussion; })
+                .selectMany(function(t) { return t.notes; })
+                .orderBy(function(n) { return n.time; }).groupBy(function(n) { return n.time; })
+                .first().getSource()).min(function(n) { return n.midi; });
 
             var highestNote = Enumerable.from(midi.tracks)
                 .where(function (t) { return !t.isPercussion; })

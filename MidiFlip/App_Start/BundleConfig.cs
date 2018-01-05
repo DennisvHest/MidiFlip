@@ -26,8 +26,6 @@ namespace MidiFlip {
                       "~/Content/bootstrap.min.css",
                       "~/Content/font-awesome/css/font-awesome.min.css",
                       "~/Content/base.min.css"));
-
-            BundleTable.EnableOptimizations = true;
         }
     }
 }

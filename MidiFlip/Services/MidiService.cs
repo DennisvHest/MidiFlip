@@ -22,7 +22,8 @@ namespace MidiFlip.Services {
             float anchorNote = midi.Tracks
                 .Where(t => t.Events.OfType<NoteVoiceMidiEvent>().Any() && t.Events.OfType<NoteVoiceMidiEvent>().Any(n => n.Channel != 9 && n.Channel != 10))
                 .Select(t => t.Events.OfType<NoteVoiceMidiEvent>().First())
-                .OrderBy(n => n.DeltaTime).FirstOrDefault().Note;
+                .OrderBy(e => e.DeltaTime).GroupBy(e => e.DeltaTime).First() //Find the first note
+                .Min(e => e.Note); //Order by note number if there are notes playing at the same time
 
             int highestNote = midi.Tracks
                 .Where(t => t.Events.OfType<NoteVoiceMidiEvent>().Any(n => n.Channel != 9 && n.Channel != 10))
