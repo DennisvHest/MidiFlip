@@ -2,17 +2,24 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
-using MidiFlip.Exceptions;
+using MidiFlip.Models;
+using MidiFlip.ObjectMappers;
 using MidiSharp;
 using MidiSharp.Events.Voice.Note;
 
 namespace MidiFlip.Services {
     public interface IMidiService {
         Stream Flip(Stream midiFile, int octaveChangeOption);
+        IEnumerable<Midi> Search(string query);
     }
 
     public class MidiService : IMidiService {
+
+        private readonly ApiClient _apiClient;
+
+        public MidiService(ApiClient apiClient) {
+            _apiClient = apiClient;
+        }
 
         public Stream Flip(Stream midiFile, int octaveChangeOption) {
             //Load midi file
@@ -91,6 +98,10 @@ namespace MidiFlip.Services {
             flippedMidiStream.Position = 0;
 
             return flippedMidiStream;
+        }
+
+        public IEnumerable<Midi> Search(string query) {
+            return _apiClient.GetMultiple("search?q=" + query, new SongMapper());
         }
     }
 }

@@ -28,7 +28,7 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
 
 //File dropzone
 $("#midi-dropzone").dropzone({
-    url: "/home/flip",
+    url: "/midi/flip",
     clickable: "#browse",
     autoProcessQueue: false,
     previewsContainer: false,

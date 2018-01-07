@@ -120,7 +120,7 @@ function sendFlipRequest() {
 
     //Send the flip request
     var flipRequest = new XMLHttpRequest();
-    flipRequest.open("POST", "/home/flip", true);
+    flipRequest.open("POST", "/midi/flip", true);
     flipRequest.responseType = "arraybuffer";
 
     var formData = new FormData();

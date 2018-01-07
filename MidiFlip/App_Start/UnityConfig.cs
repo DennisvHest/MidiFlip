@@ -1,4 +1,5 @@
 using System;
+using HtmlAgilityPack;
 using MidiFlip.Services;
 using Unity;
 
@@ -36,6 +37,8 @@ namespace MidiFlip
         /// </remarks>
         public static void RegisterTypes(IUnityContainer container) {
             container.RegisterType<IMidiService, MidiService>();
+            container.RegisterType<HtmlWeb, HtmlWeb>();
+            container.RegisterType<ApiClient, ApiClient>();
         }
     }
 }

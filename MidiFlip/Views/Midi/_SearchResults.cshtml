@@ -1,0 +1,6 @@
+﻿@using MidiFlip.Models
+@model IEnumerable<Midi>
+
+@foreach (Midi midi in Model) {
+    <p>@midi.Id - @midi.Title - @midi.Artist</p>
+}

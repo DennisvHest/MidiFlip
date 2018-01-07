@@ -45,6 +45,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.6.11.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.6.11\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=2.0.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.2.0.6\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>
@@ -177,12 +180,18 @@
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MidiController.cs" />
     <Compile Include="Exceptions\MidiFlipException.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Midi.cs" />
+    <Compile Include="ObjectMappers\IObjectMapper.cs" />
+    <Compile Include="ObjectMappers\SongMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ApiClient.cs" />
     <Compile Include="Services\MidiService.cs" />
+    <Compile Include="Services\SongService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\audio\A0.mp3" />
@@ -305,10 +314,10 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Midi\_SearchResults.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
