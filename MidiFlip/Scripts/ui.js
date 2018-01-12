@@ -149,7 +149,7 @@ function updateStopTime() {
 }
 
 $("body").keyup(function (e) {
-    if (e.keyCode === 32) {
+    if (e.keyCode === 32 && inputFile !== undefined) {
         //"Click" the flip-button when spacebar is pressed
         flipButton.click();
     }
