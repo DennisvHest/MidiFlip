@@ -6,7 +6,7 @@ using MidiFlip.Models;
 
 namespace MidiFlip.ObjectMappers {
 
-    public class SongMapper : IObjectMapper<Midi> {
+    public class MidiMapper : IObjectMapper<Midi> {
 
         public Midi Map(HtmlDocument data) {
             throw new NotImplementedException();
@@ -16,11 +16,13 @@ namespace MidiFlip.ObjectMappers {
             return data.DocumentNode.SelectNodes("//div[@class='search-song-container']")
                 .Select(s => {
                     HtmlNode titleNode = s.SelectSingleNode("./div[@class='search-song-title']/a");
+                    HtmlNode imageNode = s.SelectSingleNode("./div[@class='search-song-image']/a/img");
 
                     return new Midi {
                         Id = int.Parse(titleNode.Attributes.First(a => a.Name == "href").Value.Split('-')[1]),
                         Title = titleNode.InnerText,
-                        Artist = s.SelectSingleNode("./div[@class='search-song-cat']/a").InnerText
+                        Artist = s.SelectSingleNode("./div[@class='search-song-cat']/a").InnerText,
+                        ImagePath = imageNode?.Attributes.First(a => a.Name == "src").Value
                     };
                 });
         }

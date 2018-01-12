@@ -2,5 +2,17 @@
 @model IEnumerable<Midi>
 
 @foreach (Midi midi in Model) {
-    <p>@midi.Id - @midi.Title - @midi.Artist</p>
+    <div class="search-card">
+        <div>
+            @if (midi.ImagePath != null) {
+                <img src="@Constants.ApiBaseUrl@midi.ImagePath" />
+            } else {
+                <img src="~/Content/images/placeholder.png" />
+            }
+        </div>
+        <div class="midi-info">
+            <h5>@midi.Title</h5>
+            <h6>@midi.Artist</h6>
+        </div>
+    </div>
 }

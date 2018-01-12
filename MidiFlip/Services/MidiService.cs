@@ -101,7 +101,7 @@ namespace MidiFlip.Services {
         }
 
         public IEnumerable<Midi> Search(string query) {
-            return _apiClient.GetMultiple("search?q=" + query, new SongMapper());
+            return _apiClient.GetMultiple("search?q=" + query, new MidiMapper());
         }
     }
 }

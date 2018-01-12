@@ -4,40 +4,49 @@
 
 <div id="midi-dropzone">
 </div>
-<div id="flip">
-    <a href="https://twitter.com/search?q=%23midiflip&lang=nl" target="_blank"><h1>#MIDIFLIP</h1></a>
-    <p>Web tool for automatically flipping and playing MIDI-files.</p>
-    <div id="upload">
-        <i class="fa fa-file" aria-hidden="true"></i>
-        <h6>Drop a file...</h6>
-    </div>
-    <button id="browse" class="ripple-button" type="button"><i class="fa fa-upload" aria-hidden="true"></i> Or browse...</button>
-    <div id="message" class="warning">Warning</div>
-    <div id="options">
-        <div id="instrument-select" class="col-xs-6">
-            <b>Select instrument:</b>
-            <p>
-                <input type="radio" id="piano" name="instrument" data-instrument="0" checked>
-                <label for="piano">Piano</label>
-            </p>
-            <p>
-                <input type="radio" id="triangle-synth" name="instrument" data-instrument="1">
-                <label for="triangle-synth">Triangle Synth</label>
-            </p>
+<div id="center">
+    <div id="flip">
+        <a href="https://twitter.com/search?q=%23midiflip&lang=nl" target="_blank"><h1>#MIDIFLIP</h1></a>
+        <p>Web tool for automatically flipping and playing MIDI-files.</p>
+        <div id="upload">
+            <i class="fa fa-file" aria-hidden="true"></i>
+            <h6>Drop a file...</h6>
         </div>
-        <div class="col-xs-6">
-            <b>Change octave:</b>
-            <select id="octave-change" name="octaveChange"></select>
+        <button id="browse" class="ripple-button" type="button"><i class="fa fa-upload" aria-hidden="true"></i> Or browse...</button>
+        <div id="message" class="warning">Warning</div>
+        <div id="options">
+            <div id="instrument-select" class="col-xs-6">
+                <b>Select instrument:</b>
+                <p>
+                    <input type="radio" id="piano" name="instrument" data-instrument="0" checked>
+                    <label for="piano">Piano</label>
+                </p>
+                <p>
+                    <input type="radio" id="triangle-synth" name="instrument" data-instrument="1">
+                    <label for="triangle-synth">Triangle Synth</label>
+                </p>
+            </div>
+            <div class="col-xs-6">
+                <b>Change octave:</b>
+                <select id="octave-change" name="octaveChange"></select>
+            </div>
+            <div class="col-xs-12"><i id="mobile-piano-warning"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> The piano instrument might not play correctly on mobile devices.</i></div>
         </div>
-        <div class="col-xs-12"><i id="mobile-piano-warning"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> The piano instrument might not play correctly on mobile devices.</i></div>
+        <div id="play-deck">
+            <button id="flip-another" class="ripple-button" type="button"><i class="fa fa-angle-left" aria-hidden="true"></i></button>
+            <button id="flip-button" class="ripple-button" type="button" disabled>FLIP</button>
+            <button id="stop-button" class="ripple-button" type="button"><i class="fa fa-stop" aria-hidden="true"></i></button>
+        </div>
+        <div class="col-xs-12">
+            <a id="download-button" class="ripple-button" title="Download"><i class="fa fa-download" aria-hidden="true"></i></a>
+        </div>
     </div>
-    <div id="play-deck">
-        <button id="flip-another" class="ripple-button" type="button"><i class="fa fa-angle-left" aria-hidden="true"></i></button>
-        <button id="flip-button" class="ripple-button" type="button" disabled>FLIP</button>
-        <button id="stop-button" class="ripple-button" type="button"><i class="fa fa-stop" aria-hidden="true"></i></button>
-    </div>
-    <div class="col-xs-12">
-        <a id="download-button" class="ripple-button" title="Download"><i class="fa fa-download" aria-hidden="true"></i></a>
+    <div id="search">
+        @using (Ajax.BeginForm("Search", "Midi", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "search-results" })) {
+            <input type="text" name="query" placeholder="Search MIDIs..." />
+            <button id="search-button" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+        }
+        <div id="search-results"></div>
     </div>
 </div>
 
