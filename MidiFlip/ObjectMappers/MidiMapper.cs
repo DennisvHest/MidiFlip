@@ -8,13 +8,13 @@ namespace MidiFlip.ObjectMappers {
 
     public class MidiMapper : IObjectMapper<Midi> {
 
-        public Midi Map(HtmlDocument data) {
-            throw new NotImplementedException();
-        }
-
         public IEnumerable<Midi> MapMultiple(HtmlDocument data) {
-            return data.DocumentNode.SelectNodes("//div[@class='search-song-container']")
-                .Select(s => {
+            //Found MIDIs
+            HtmlNodeCollection midiContainers = data.DocumentNode.SelectNodes("//div[@class='search-song-container']");
+
+            if (midiContainers != null) {
+                //Parse html to Midi objects
+                return midiContainers.Select(s => {
                     HtmlNode titleNode = s.SelectSingleNode("./div[@class='search-song-title']/a");
                     HtmlNode imageNode = s.SelectSingleNode("./div[@class='search-song-image']/a/img");
 
@@ -25,6 +25,10 @@ namespace MidiFlip.ObjectMappers {
                         ImagePath = imageNode?.Attributes.First(a => a.Name == "src").Value
                     };
                 });
+            }
+
+            //Didn't find any MIDIs, return an empty list
+            return new List<Midi>();
         }
     }
 }

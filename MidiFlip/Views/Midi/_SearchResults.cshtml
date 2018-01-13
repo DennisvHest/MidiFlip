@@ -1,18 +1,22 @@
 ﻿@using MidiFlip.Models
 @model IEnumerable<Midi>
 
-@foreach (Midi midi in Model) {
-    <div class="search-card">
-        <div>
-            @if (midi.ImagePath != null) {
-                <img src="@Constants.ApiBaseUrl@midi.ImagePath" />
-            } else {
-                <img src="~/Content/images/placeholder.png" />
-            }
-        </div>
-        <div class="midi-info">
-            <h5>@midi.Title</h5>
-            <h6>@midi.Artist</h6>
-        </div>
-    </div>
+@if (Model.Any()) {
+    foreach (Midi midi in Model) {
+         <div class="search-card" data-midi-id="@midi.Id">
+             <div>
+                 @if (midi.ImagePath != null) {
+                     <img src="@Constants.ApiBaseUrl@midi.ImagePath" />
+                 } else {
+                     <img src="~/Content/images/placeholder.png" />
+                 }
+             </div>
+             <div class="midi-info">
+                 <h5>@midi.Title</h5>
+                 <h6>@midi.Artist</h6>
+             </div>
+         </div>
+     }
+} else {
+    <p class="text-center"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> No results found...</p>
 }

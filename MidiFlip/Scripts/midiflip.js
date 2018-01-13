@@ -115,6 +115,20 @@ function checkOptions(file) {
     reader.readAsBinaryString(file);
 }
 
+function downloadMidi(id) {
+    var downloadRequest = new XMLHttpRequest();
+    downloadRequest.open("GET", "/midi/get?id=" + id, true);
+    downloadRequest.responseType = "arraybuffer";
+
+    downloadRequest.onload = function () {
+        var blob = new Blob([downloadRequest.response]);
+        checkOptions(blob);
+        inputFile = new File([blob], "midi", { type: "audio/midi" });
+    };
+
+    downloadRequest.send();
+}
+
 function sendFlipRequest() {
     midiDropzone.disable();
 

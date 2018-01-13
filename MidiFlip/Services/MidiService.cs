@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using MidiFlip.Models;
 using MidiFlip.ObjectMappers;
 using MidiSharp;
@@ -11,6 +12,7 @@ namespace MidiFlip.Services {
     public interface IMidiService {
         Stream Flip(Stream midiFile, int octaveChangeOption);
         IEnumerable<Midi> Search(string query);
+        Task<Stream> Get(int id);
     }
 
     public class MidiService : IMidiService {
@@ -102,6 +104,10 @@ namespace MidiFlip.Services {
 
         public IEnumerable<Midi> Search(string query) {
             return _apiClient.GetMultiple("search?q=" + query, new MidiMapper());
+        }
+
+        public async Task<Stream>Get(int id) {
+            return await _apiClient.GetFile("getter-" + id, "audio/midi");
         }
     }
 }

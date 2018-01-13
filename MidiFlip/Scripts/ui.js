@@ -164,3 +164,11 @@ function showMessage(level, msg) {
     message.html('<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' + msg);
     message.slideDown("fast");
 }
+
+function onSearchBegin() {
+    $("#search-results").html('<div class="text-center col-xs-12"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>');
+}
+
+$(document).on("click", ".search-card", function () {
+    downloadMidi($(this).data("midi-id"));
+});

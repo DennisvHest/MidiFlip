@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using MidiFlip.Services;
 
@@ -23,11 +24,17 @@ namespace MidiFlip.Controllers {
 
             Stream flippedMidi = _midiService.Flip(Request.Files[0].InputStream, octaveChange);
 
-            return File(flippedMidi, "audio/midi", "flipped");
+            return File(flippedMidi, "audio/midi");
         }
 
         public PartialViewResult Search(string query) {
             return PartialView("_SearchResults", _midiService.Search(query));
+        }
+
+        public async Task<ActionResult> Get(int id) {
+            Stream midi = await _midiService.Get(id);
+
+            return File(midi, "audio/midi");
         }
     }
 }

@@ -42,7 +42,7 @@
         </div>
     </div>
     <div id="search">
-        @using (Ajax.BeginForm("Search", "Midi", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "search-results" })) {
+        @using (Ajax.BeginForm("Search", "Midi", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "search-results", OnBegin = "onSearchBegin"})) {
             <input type="text" name="query" placeholder="Search MIDIs..." />
             <button id="search-button" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
         }
