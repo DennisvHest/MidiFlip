@@ -11,7 +11,7 @@ using MidiSharp.Events.Voice.Note;
 namespace MidiFlip.Services {
     public interface IMidiService {
         Stream Flip(Stream midiFile, int octaveChangeOption);
-        IEnumerable<Midi> Search(string query);
+        IEnumerable<SearchItem> Search(string query);
         Task<Stream> Get(int id);
     }
 
@@ -102,8 +102,8 @@ namespace MidiFlip.Services {
             return flippedMidiStream;
         }
 
-        public IEnumerable<Midi> Search(string query) {
-            return _apiClient.GetMultiple("search?q=" + query, new MidiMapper());
+        public IEnumerable<SearchItem> Search(string query) {
+            return _apiClient.GetMultiple("search?q=" + query, new SearchItemMapper());
         }
 
         public async Task<Stream>Get(int id) {

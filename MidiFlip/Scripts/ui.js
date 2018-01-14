@@ -169,6 +169,9 @@ function onSearchBegin() {
     $("#search-results").html('<div class="text-center col-xs-12"><i class="fa fa-cog fa-spin fa-3x fa-fw"></i></div>');
 }
 
-$(document).on("click", ".search-card", function () {
-    downloadMidi($(this).data("midi-id"));
+$(document).on("click", ".search-card", function() {
+    var id = $(this).data("midi-id");
+    var title = $(this).data("midi-title");
+
+    downloadMidi(id, title);
 });

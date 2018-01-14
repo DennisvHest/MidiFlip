@@ -1,9 +1,12 @@
 ﻿@using MidiFlip.Models
-@model IEnumerable<Midi>
+@model IEnumerable<SearchItem>
 
 @if (Model.Any()) {
-    foreach (Midi midi in Model) {
-         <div class="search-card" data-midi-id="@midi.Id">
+    foreach (Category category in Model.OfType<Category>()) {
+        <p>@category.Id - @category.Type - @category.Name</p>
+    }
+    foreach (Midi midi in Model.OfType<Midi>()) {
+         <div class="search-card" data-midi-id="@midi.Id" data-midi-title="@midi.Name">
              <div>
                  @if (midi.ImagePath != null) {
                      <img src="@Constants.ApiBaseUrl@midi.ImagePath" />
@@ -12,7 +15,7 @@
                  }
              </div>
              <div class="midi-info">
-                 <h5>@midi.Title</h5>
+                 <h5>@midi.Name</h5>
                  <h6>@midi.Artist</h6>
              </div>
          </div>

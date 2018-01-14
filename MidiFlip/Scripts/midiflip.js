@@ -115,7 +115,7 @@ function checkOptions(file) {
     reader.readAsBinaryString(file);
 }
 
-function downloadMidi(id) {
+function downloadMidi(id, title) {
     var downloadRequest = new XMLHttpRequest();
     downloadRequest.open("GET", "/midi/get?id=" + id, true);
     downloadRequest.responseType = "arraybuffer";
@@ -124,6 +124,7 @@ function downloadMidi(id) {
         var blob = new Blob([downloadRequest.response]);
         checkOptions(blob);
         inputFile = new File([blob], "midi", { type: "audio/midi" });
+        browseButton.html(title);
     };
 
     downloadRequest.send();
