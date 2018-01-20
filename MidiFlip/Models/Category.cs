@@ -24,7 +24,7 @@ namespace MidiFlip.Models {
                     break;
                 case "/nationalanthem":
                     Type = CategoryType.NationalAnthem;
-                    break; ;
+                    break;
                 default:
                     Type = CategoryType.Artist;
                     break;
