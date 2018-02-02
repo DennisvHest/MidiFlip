@@ -242,12 +242,14 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="favicon.ico" />
+    <Content Include="googleba064189202189d5.html" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\base.less" />
+    <Content Include="sitemap.xml" />
     <None Include="compilerconfig.json" />
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
@@ -306,6 +308,9 @@
     <Content Include="Scripts\player.js" />
     <Content Include="Scripts\tone.min.js" />
     <Content Include="Scripts\ui.js" />
+    <Content Include="robots.txt">
+      <BrowseToURL>~/robots.txt</BrowseToURL>
+    </Content>
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
