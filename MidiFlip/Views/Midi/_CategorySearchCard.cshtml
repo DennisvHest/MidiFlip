@@ -1,0 +1,9 @@
+﻿@using MidiFlip.Helpers
+@model MidiFlip.Models.Category
+
+<div class="search-card category-search-card col-xs-6">
+    <div class="category-icon">
+        <i class="fa fa-lg fa-@Html.GetCategoryFaClass(Model.Type)"></i>
+    </div>
+    <b>@Model.Name</b>
+</div>

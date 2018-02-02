@@ -3,23 +3,11 @@
 
 @if (Model.Any()) {
     foreach (Category category in Model.OfType<Category>()) {
-        <p>@category.Id - @category.Type - @category.Name</p>
+        @Html.Partial("_CategorySearchCard", category)
     }
     foreach (Midi midi in Model.OfType<Midi>()) {
-         <div class="search-card" data-midi-id="@midi.Id" data-midi-title="@midi.Name">
-             <div>
-                 @if (midi.ImagePath != null) {
-                     <img src="@Constants.ApiBaseUrl@midi.ImagePath" />
-                 } else {
-                     <img src="~/Content/images/placeholder.png" />
-                 }
-             </div>
-             <div class="midi-info">
-                 <h5>@midi.Name</h5>
-                 <h6>@midi.Artist</h6>
-             </div>
-         </div>
-     }
+        @Html.Partial("_MidiSearchCard", midi)
+    }
 } else {
     <p class="text-center"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> No results found...</p>
 }

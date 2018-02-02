@@ -1,0 +1,15 @@
+﻿@model MidiFlip.Models.Midi
+
+<div class="search-card midi-search-card" data-midi-id="@Model.Id" data-midi-title="@Model.Name">
+    <div>
+        @if (Model.ImagePath != null) {
+            <img src="@Constants.ApiBaseUrl@Model.ImagePath" />
+        } else {
+            <img src="~/Content/images/placeholder.png" />
+        }
+    </div>
+    <div class="midi-info">
+        <h5>@Model.Name</h5>
+        <h6>@Model.Artist</h6>
+    </div>
+</div>
